@@ -15,7 +15,7 @@ public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu
     }
 
     @Override
-    public void addSlots() {
+    public void addSlots(Object[] params) {
         for(var slot : builder.slots) {
             this.addSlot(slot.create(slots));
             this.containerSlotCount++;

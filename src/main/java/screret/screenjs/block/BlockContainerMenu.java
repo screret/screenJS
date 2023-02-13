@@ -12,20 +12,19 @@ public class BlockContainerMenu extends AbstractContainerMenu<BlockContainerMenu
     private final ContainerLevelAccess access;
     private final Block block;
 
-    private final ItemStackHandler slots;
     public BlockContainerMenu(BlockMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory) {
         this(builder, pContainerId, pPlayerInventory, ContainerLevelAccess.NULL, null);
     }
 
     public BlockContainerMenu(BlockMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory, ContainerLevelAccess access, Block block) {
-        super(builder, pContainerId, pPlayerInventory);
-        slots = new ItemStackHandler(builder.slots.size());
+        super(builder, pContainerId, pPlayerInventory, new ItemStackHandler(builder.slots.size()));
         this.access = access;
         this.block = block;
     }
 
     @Override
-    public void addSlots() {
+    public void addSlots(Object[] params) {
+        ItemStackHandler slots = (ItemStackHandler) params[0];
         for(var slot : builder.slots) {
             this.addSlot(slot.create(slots));
             this.containerSlotCount++;

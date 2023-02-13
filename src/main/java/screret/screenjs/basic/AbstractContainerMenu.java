@@ -18,13 +18,13 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
     public final Level level;
     public final Player player;
 
-    public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory) {
+    public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory, Object... params) {
         super(ForgeRegistries.MENU_TYPES.getValue(builder.id), pContainerId);
         this.builder = builder;
         this.level = pPlayerInventory.player.level;
         this.player = pPlayerInventory.player;
 
-        this.addSlots();
+        this.addSlots(params);
 
         if(builder.addInventorySlots) {
             for(int y = 0; y < 3; ++y) {
@@ -39,7 +39,7 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
         }
     }
 
-    public abstract void addSlots();
+    public abstract void addSlots(Object[] params);
 
     @Nonnull
     @Override

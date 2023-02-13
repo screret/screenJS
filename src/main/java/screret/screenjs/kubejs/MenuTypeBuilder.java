@@ -110,13 +110,13 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    public MenuTypeBuilder<M> drawable(int xPos, int yPos, int x, int y, int u, int v, String texureLoc) {
-        drawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), new ResourceLocation(texureLoc));
+    public MenuTypeBuilder<M> drawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc) {
+        drawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), texureLoc);
         return this;
     }
 
-    public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, int x, int y, int u, int v, String texureLoc, String direction) {
-        progressDrawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), Pair.of(MoveDirection.valueOf(direction), new ResourceLocation(texureLoc)));
+    public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction) {
+        progressDrawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), Pair.of(MoveDirection.valueOf(direction), texureLoc));
         return this;
     }
 
