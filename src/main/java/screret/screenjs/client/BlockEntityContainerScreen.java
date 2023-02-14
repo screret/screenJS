@@ -18,30 +18,73 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
         super.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
 
         if(this.menu.doesTick) {
-            var values = this.menu.blockEntity.getValues();
-            if((Boolean) values.get("isProcessing")) {
-                {
-                    int progress = (Integer) values.get("progress");
-                    for(var kvp : menu.builder.progressDrawables.entrySet()) {
-                        var key = kvp.getKey();
-                        var point = key.getFirst();
-                        var size = key.getSecond();
-                        var direction = kvp.getValue().getFirst();
-                        var location = kvp.getValue().getSecond();
-                        RenderSystem.setShaderTexture(0, location);
-                        if(direction == MenuTypeBuilder.MoveDirection.DOWN) {
-                            this.blit(pPoseStack, leftPos + point.x, topPos + point.y - size.getHeight() + progress, size.getX(), size.getY() - size.getHeight() + progress, size.getWidth(), progress - 1);
-                        } else if(direction == MenuTypeBuilder.MoveDirection.UP) {
-                            this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - progress, size.getX(), size.getY() - progress, size.getWidth(), progress - 1);
-                        } else if(direction == MenuTypeBuilder.MoveDirection.LEFT) {
-                            this.blit(pPoseStack, leftPos + point.x - size.getWidth() + progress, topPos + point.y, size.getX() - size.getWidth() + progress, size.getY(), progress - 1, size.getHeight());
-                        } else if(direction == MenuTypeBuilder.MoveDirection.RIGHT) {
-                            this.blit(pPoseStack, leftPos + point.x + size.getWidth() - progress, topPos + point.y, size.getX() - progress, size.getY(), progress - 1, size.getHeight());
+            var values = this.menu.blockEntity.getPersistentData();
+            for (var drawable : menu.builder.progressDrawables) {
+                var point = drawable.renderPoint();
+                var size = drawable.texturePos();
+
+                switch (drawable.type()) {
+                    case PROGRESS -> {
+                        if(values.contains("isProcessing") && values.getBoolean("isProcessing")) {
+                            int progress = values.getInt("progress");
+                            int maxProgress = values.getInt("totalProgress");
+                            RenderSystem.setShaderTexture(0, drawable.texture());
+                            switch (drawable.direction()) {
+                                case DOWN -> {
+                                    int value = progress(maxProgress, progress, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y - size.getHeight() + value, size.getX(), size.getY() - size.getHeight() + value, size.getWidth(), value - 1);
+                                }
+                                case UP -> {
+                                    int value = progress(maxProgress, progress, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() - value, size.getWidth(), value - 1);
+
+                                }
+                                case LEFT -> {
+                                    int value = progress(maxProgress, progress, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x - size.getWidth() + value, topPos + point.y, size.getX() - size.getWidth() + value, size.getY(), value - 1, size.getHeight());
+                                }
+                                case RIGHT -> {
+                                    int value = progress(maxProgress, progress, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() - value, size.getY(), value - 1, size.getHeight());
+                                }
+
+                            }
                         }
                     }
-                }
 
+                    case FUEL -> {
+                        int fuel = values.getInt("remainingFuel");
+                        int maxFuel = values.getInt("fuelDuration");
+                        RenderSystem.setShaderTexture(0, drawable.texture());
+                        switch (drawable.direction()) {
+                            case DOWN -> {
+                                int value = progress(maxFuel, fuel, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y - size.getHeight() + value, size.getX(), size.getY() - size.getHeight() + value, size.getWidth(), value - 1);
+                            }
+                            case UP -> {
+                                int value = progress(maxFuel, fuel, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() - value, size.getWidth(), value - 1);
+                            }
+                            case LEFT -> {
+                                int value = progress(maxFuel, fuel, size.getWidth());
+                                this.blit(pPoseStack, leftPos + point.x - size.getWidth() + value, topPos + point.y, size.getX() - size.getWidth() + value, size.getY(), value - 1, size.getHeight());
+                            }
+                            case RIGHT -> {
+                                int value = progress(maxFuel, fuel, size.getWidth());
+                                this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() - value, size.getY(), value - 1, size.getHeight());
+                            }
+
+                        }
+                    }
+
+                }
             }
         }
+
     }
+
+    public int progress(int max, int current, int width) {
+        return max * width / current;
+    }
+
 }

@@ -1,6 +1,5 @@
 package screret.screenjs.block;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.EntityBlock;
@@ -8,7 +7,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import screret.bejs.kubejs.BlockEntityJS;
 import screret.screenjs.basic.AbstractContainerMenu;
 import screret.screenjs.kubejs.BlockEntityMenuType;
@@ -24,7 +22,6 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
     public BlockEntityContainerMenu(BlockEntityMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory, BlockEntityJS blockEntity) {
         super(builder, pContainerId, pPlayerInventory, blockEntity);
         this.blockEntity = blockEntity;
-        actualAddSlots();
         this.doesTick = this.blockEntity.getBlockState().getBlock() instanceof EntityBlock;
     }
 
@@ -36,10 +33,6 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
             this.addSlot(slot.create(beItemHandler));
             this.containerSlotCount++;
         }
-    }
-
-    public void actualAddSlots() {
-
     }
 
     @Override

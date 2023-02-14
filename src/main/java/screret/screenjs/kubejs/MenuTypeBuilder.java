@@ -38,15 +38,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extends BuilderBase<MenuType<M>> {
     private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
 
-    public transient Supplier<IItemHandler> itemHandler;
     public transient List<SlotSupplier> slots;
     public transient HashMap<Pair<Point, Rect2i>, ResourceLocation> drawables;
-    public transient HashMap<Pair<Point, Rect2i>, Pair<MoveDirection, ResourceLocation>> progressDrawables;
+    public transient List<ProgressDrawable> progressDrawables;
     public transient ResourceLocation backroundTexture;
     public transient Rect2i backroundPosition;
     public transient int tintColor;
@@ -59,12 +59,13 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     public MenuTypeBuilder(ResourceLocation i) {
         super(i);
-        this.itemHandler = null;
         slots = new ArrayList<>();
         drawables = new HashMap<>();
+        progressDrawables = new ArrayList<>();
         backroundTexture = DEFAULT_BACKGROUND;
         backroundPosition = new Rect2i(0, 0, 176, 166);
         tintColor = SimpleColor.WHITE.getArgbJS();
+        this.playerInvYStart = -1;
         this.quickMoveFunction = MenuTypeBuilder::quickMoveStack;
         this.validFunction = ((player, pos) -> player.distanceToSqr(pos) < 8 * 8);
         this.addInventorySlots = true;
@@ -105,6 +106,11 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
+    public MenuTypeBuilder<M> loop(Consumer<MenuTypeBuilder<M>> consumer) {
+        consumer.accept(this);
+        return this;
+    }
+
     public MenuTypeBuilder<M> tintColor(Color color) {
         this.tintColor = color.getArgbJS();
         return this;
@@ -115,8 +121,8 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction) {
-        progressDrawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), Pair.of(MoveDirection.valueOf(direction), texureLoc));
+    public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction, String type) {
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.valueOf(type)));
         return this;
     }
 
@@ -140,6 +146,12 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         this.addInventorySlots = false;
         return this;
     }
+
+    public MenuTypeBuilder<M> playerInventoryY(int yHeight) {
+        playerInvYStart = yHeight;
+        return this;
+    }
+
 
     @Override
     public void clientRegistry(Supplier<Minecraft> minecraft) {
@@ -181,4 +193,11 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         LEFT,
         RIGHT
     }
+
+    public enum ProgressDrawableType {
+        PROGRESS,
+        FUEL
+    }
+
+    public record ProgressDrawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type) {}
 }

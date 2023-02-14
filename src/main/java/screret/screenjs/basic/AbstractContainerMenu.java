@@ -6,6 +6,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import screret.screenjs.ScreenJS;
 import screret.screenjs.kubejs.BasicMenuType;
 import screret.screenjs.kubejs.MenuTypeBuilder;
 
@@ -27,6 +28,10 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
         this.addSlots(params);
 
         if(builder.addInventorySlots) {
+            if(builder.playerInvYStart == -1) {
+                builder.playerInvYStart = builder.backroundPosition.getHeight() - 94;
+            }
+
             for(int y = 0; y < 3; ++y) {
                 for(int x = 0; x < 9; ++x) {
                     this.addSlot(new Slot(pPlayerInventory, x + y * 9 + 9, 8 + x * 18, y * 18 + builder.playerInvYStart));

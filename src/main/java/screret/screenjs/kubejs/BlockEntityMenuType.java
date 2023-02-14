@@ -1,8 +1,13 @@
 package screret.screenjs.kubejs;
 
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.IContainerFactory;
+import screret.bejs.kubejs.BlockEntityJS;
 import screret.screenjs.block.BlockEntityContainerMenu;
 import screret.screenjs.client.BlockEntityContainerScreen;
 
@@ -10,7 +15,12 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
     private final ResourceLocation id;
 
     public BlockEntityMenuType(BlockEntityMenuType.Builder builder) {
-        super((pContainerId, pPlayerInventory) -> new BlockEntityContainerMenu(builder, pContainerId, pPlayerInventory));
+        super((IContainerFactory<BlockEntityContainerMenu>)((pContainerId, inventory, extraData) -> {
+            BlockPos pos = extraData.readBlockPos();
+            Level world = inventory.player.getLevel();
+            BlockEntityJS tile = (BlockEntityJS) world.getBlockEntity(pos);
+            return new BlockEntityContainerMenu(builder, pContainerId, inventory, tile);
+        }));
         this.id = builder.id;
     }
 
