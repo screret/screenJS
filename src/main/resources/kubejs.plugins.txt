@@ -1,1 +1,1 @@
-screret.screenjs.ScreenJSPlugin screenjs
+screret.screenjs.ScreenJSPlugin
