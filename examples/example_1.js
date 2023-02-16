@@ -7,7 +7,7 @@ StartupEvents.registry('menu', event => {
         .addSlot(10, 200)
         .loop(builder /*this builder*/=> {
             for(let x = 0; x < 9; x++) {
-                for (let y = 0; y < 4; y++) {
+                for (let y = 0; y < 2; y++) {
                     builder.addSlot(x * 18 /*<- the width of a slot, remember to add this*/, y * 18)
                 }
             }

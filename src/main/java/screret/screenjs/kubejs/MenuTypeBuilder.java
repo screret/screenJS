@@ -122,7 +122,12 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     }
 
     public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction, String type) {
-        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.valueOf(type)));
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.valueOf(type), -1));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> fluidDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction, int tankIndex) {
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.FLUID, tankIndex));
         return this;
     }
 
@@ -196,8 +201,10 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     public enum ProgressDrawableType {
         PROGRESS,
-        FUEL
+        FUEL,
+        ENERGY,
+        FLUID,
     }
 
-    public record ProgressDrawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type) {}
+    public record ProgressDrawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type, int handlerIndex) {}
 }

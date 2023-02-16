@@ -4,6 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import screret.screenjs.block.BlockEntityContainerMenu;
 import screret.screenjs.kubejs.MenuTypeBuilder;
 
@@ -74,6 +77,64 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
                                 this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() - value, size.getY(), value - 1, size.getHeight());
                             }
 
+                        }
+                    }
+
+                    case ENERGY -> {
+                        IEnergyStorage energyCap = this.menu.blockEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+                        if(energyCap != null) {
+                            int energy = energyCap.getEnergyStored();
+                            int maxEnergy = energyCap.getMaxEnergyStored();
+                            RenderSystem.setShaderTexture(0, drawable.texture());
+                            switch (drawable.direction()) {
+                                case DOWN -> {
+                                    int value = progress(maxEnergy, energy, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y - size.getHeight() + value, size.getX(), size.getY() - size.getHeight() + value, size.getWidth(), value - 1);
+                                }
+                                case UP -> {
+                                    int value = progress(maxEnergy, energy, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() - value, size.getWidth(), value - 1);
+                                }
+                                case LEFT -> {
+                                    int value = progress(maxEnergy, energy, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x - size.getWidth() + value, topPos + point.y, size.getX() - size.getWidth() + value, size.getY(), value - 1, size.getHeight());
+                                }
+                                case RIGHT -> {
+                                    int value = progress(maxEnergy, energy, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() - value, size.getY(), value - 1, size.getHeight());
+                                }
+
+                            }
+                        }
+                    }
+
+
+                    case FLUID -> {
+                        IFluidHandler fluidCap = this.menu.blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
+                        int tankIndex = drawable.handlerIndex();
+                        if(fluidCap != null && tankIndex != -1) {
+                            int fluid = fluidCap.getFluidInTank(tankIndex).getAmount();
+                            int maxFluid = fluidCap.getTankCapacity(tankIndex);
+                            RenderSystem.setShaderTexture(0, drawable.texture());
+                            switch (drawable.direction()) {
+                                case DOWN -> {
+                                    int value = progress(maxFluid, fluid, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y - size.getHeight() + value, size.getX(), size.getY() - size.getHeight() + value, size.getWidth(), value - 1);
+                                }
+                                case UP -> {
+                                    int value = progress(maxFluid, fluid, size.getHeight());
+                                    this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() - value, size.getWidth(), value - 1);
+                                }
+                                case LEFT -> {
+                                    int value = progress(maxFluid, fluid, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x - size.getWidth() + value, topPos + point.y, size.getX() - size.getWidth() + value, size.getY(), value - 1, size.getHeight());
+                                }
+                                case RIGHT -> {
+                                    int value = progress(maxFluid, fluid, size.getWidth());
+                                    this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() - value, size.getY(), value - 1, size.getHeight());
+                                }
+
+                            }
                         }
                     }
 
