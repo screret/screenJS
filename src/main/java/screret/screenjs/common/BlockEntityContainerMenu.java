@@ -1,4 +1,4 @@
-package screret.screenjs.block;
+package screret.screenjs.common;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -8,7 +8,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import screret.bejs.kubejs.BlockEntityJS;
-import screret.screenjs.basic.AbstractContainerMenu;
+import screret.screenjs.misc.AbstractContainerMenu;
 import screret.screenjs.kubejs.BlockEntityMenuType;
 
 public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityContainerMenu> {
@@ -22,7 +22,7 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
     public BlockEntityContainerMenu(BlockEntityMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory, BlockEntityJS blockEntity) {
         super(builder, pContainerId, pPlayerInventory, blockEntity);
         this.blockEntity = blockEntity;
-        this.doesTick = this.blockEntity.getBlockState().getBlock() instanceof EntityBlock;
+        this.doesTick = this.blockEntity.getBlockState().getBlock() instanceof EntityBlock entityBlock && entityBlock.getTicker(blockEntity.getLevel(), blockEntity.getBlockState(), blockEntity.getType()) != null;
     }
 
     @Override

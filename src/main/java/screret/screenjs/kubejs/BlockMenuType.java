@@ -4,7 +4,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
-import screret.screenjs.block.BlockContainerMenu;
+import screret.screenjs.common.BlockContainerMenu;
 import screret.screenjs.client.BlockContainerScreen;
 
 public class BlockMenuType extends MenuType<BlockContainerMenu> {

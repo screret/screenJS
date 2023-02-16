@@ -3,7 +3,7 @@ package screret.screenjs.kubejs;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import screret.screenjs.basic.BasicContainerMenu;
+import screret.screenjs.common.BasicContainerMenu;
 import screret.screenjs.client.BasicContainerScreen;
 
 public class BasicMenuType extends MenuType<BasicContainerMenu> {

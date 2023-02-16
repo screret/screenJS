@@ -8,10 +8,11 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import screret.screenjs.common.BlockEntityContainerMenu;
+import screret.screenjs.common.EntityContainerMenu;
 
-public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEntityContainerMenu> {
+public class EntityContainerScreen extends AbstractContainerScreen<EntityContainerMenu> {
 
-    public BlockEntityContainerScreen(BlockEntityContainerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+    public EntityContainerScreen(EntityContainerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
 
@@ -19,7 +20,7 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
     protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
         super.renderBg(pPoseStack, pPartialTick, pMouseX, pMouseY);
 
-        var values = this.menu.blockEntity.getPersistentData();
+        var values = this.menu.entity.getPersistentData();
         for (var drawable : menu.builder.progressDrawables) {
             var point = drawable.renderPoint();
             var size = drawable.texturePos();
@@ -79,7 +80,7 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
                 }
 
                 case ENERGY -> {
-                    IEnergyStorage energyCap = this.menu.blockEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
+                    IEnergyStorage energyCap = this.menu.entity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
                     if(energyCap != null) {
                         int energy = energyCap.getEnergyStored();
                         int maxEnergy = energyCap.getMaxEnergyStored();
@@ -108,7 +109,7 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
 
 
                 case FLUID -> {
-                    IFluidHandler fluidCap = this.menu.blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
+                    IFluidHandler fluidCap = this.menu.entity.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
                     int tankIndex = drawable.handlerIndex();
                     if(fluidCap != null && tankIndex != -1) {
                         int fluid = fluidCap.getFluidInTank(tankIndex).getAmount();

@@ -1,4 +1,4 @@
-package screret.screenjs.basic;
+package screret.screenjs.misc;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -6,8 +6,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
-import screret.screenjs.ScreenJS;
-import screret.screenjs.kubejs.BasicMenuType;
 import screret.screenjs.kubejs.MenuTypeBuilder;
 
 import javax.annotation.Nonnull;
@@ -20,7 +18,7 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
     public final Player player;
 
     public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory, Object... params) {
-        super(ForgeRegistries.MENU_TYPES.getValue(builder.id), pContainerId);
+        super(builder.get(), pContainerId);
         this.builder = builder;
         this.level = pPlayerInventory.player.level;
         this.player = pPlayerInventory.player;

@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import screret.screenjs.basic.AbstractContainerMenu;
+import screret.screenjs.misc.AbstractContainerMenu;
 
 public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<T> {
     private final int imageX, imageY;

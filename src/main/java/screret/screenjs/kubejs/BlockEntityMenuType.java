@@ -3,12 +3,11 @@ package screret.screenjs.kubejs;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.IContainerFactory;
 import screret.bejs.kubejs.BlockEntityJS;
-import screret.screenjs.block.BlockEntityContainerMenu;
+import screret.screenjs.common.BlockEntityContainerMenu;
 import screret.screenjs.client.BlockEntityContainerScreen;
 
 public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {

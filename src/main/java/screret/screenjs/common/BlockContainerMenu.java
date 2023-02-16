@@ -1,4 +1,4 @@
-package screret.screenjs.block;
+package screret.screenjs.common;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.ItemStackHandler;
-import screret.screenjs.basic.AbstractContainerMenu;
+import screret.screenjs.misc.AbstractContainerMenu;
 import screret.screenjs.kubejs.BlockMenuType;
 import screret.screenjs.misc.OutputSlot;
 
