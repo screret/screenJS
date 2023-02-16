@@ -4,12 +4,13 @@ import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.Registrar;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
+import dev.latvian.mods.kubejs.script.BindingsEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
-import screret.screenjs.kubejs.BasicMenuType;
-import screret.screenjs.kubejs.BlockEntityMenuType;
-import screret.screenjs.kubejs.BlockMenuType;
-import screret.screenjs.kubejs.EntityMenuType;
+import screret.screenjs.kubejs.*;
+
+import java.awt.*;
 
 import static dev.latvian.mods.kubejs.KubeJSRegistries.genericRegistry;
 import static net.minecraft.core.Registry.MENU_REGISTRY;
@@ -19,6 +20,13 @@ public class ScreenJSPlugin extends KubeJSPlugin {
 
     public static Registrar<MenuType<?>> menus() {
         return genericRegistry(MENU_REGISTRY);
+    }
+
+    @Override
+    public void registerBindings(BindingsEvent event) {
+        event.add("Drawable", MenuTypeBuilder.Drawable.class);
+        event.add("Point", Point.class);
+        event.add("Rect2i", Rect2i.class);
     }
 
     @Override

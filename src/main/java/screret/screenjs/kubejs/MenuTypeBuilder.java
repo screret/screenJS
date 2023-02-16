@@ -6,10 +6,12 @@ import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.util.color.SimpleColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -33,8 +35,9 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
 
     public transient List<SlotSupplier> slots;
-    public transient HashMap<Pair<Point, Rect2i>, ResourceLocation> drawables;
+    public transient List<Drawable> drawables;
     public transient List<ProgressDrawable> progressDrawables;
+    public transient List<Button> buttons;
     public transient ResourceLocation backroundTexture;
     public transient Rect2i backroundPosition;
     public transient int tintColor;
@@ -48,8 +51,9 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     public MenuTypeBuilder(ResourceLocation i) {
         super(i);
         slots = new ArrayList<>();
-        drawables = new HashMap<>();
+        drawables = new ArrayList<>();
         progressDrawables = new ArrayList<>();
+        buttons = new ArrayList<>();
         backroundTexture = DEFAULT_BACKGROUND;
         backroundPosition = new Rect2i(0, 0, 176, 166);
         tintColor = SimpleColor.WHITE.getArgbJS();
@@ -105,7 +109,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     }
 
     public MenuTypeBuilder<M> drawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc) {
-        drawables.put(Pair.of(new Point(xPos, yPos), new Rect2i(x, y, u, v)), texureLoc);
+        drawables.add(new Drawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc));
         return this;
     }
 
@@ -116,6 +120,11 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     public MenuTypeBuilder<M> fluidDrawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc, String direction, int tankIndex) {
         progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.FLUID, tankIndex));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> button(Drawable unPressed, Component tooltip, net.minecraft.client.gui.components.Button.OnPress methodToRun) {
+        buttons.add(new Button(unPressed, tooltip, methodToRun));
         return this;
     }
 
@@ -194,5 +203,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         FLUID,
     }
 
+    public record Drawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture) {}
     public record ProgressDrawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type, int handlerIndex) {}
+    public record Button(Drawable drawable, Component tooltip, net.minecraft.client.gui.components.Button.OnPress methodToRun) {}
 }

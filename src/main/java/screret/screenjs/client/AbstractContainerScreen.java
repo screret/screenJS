@@ -2,6 +2,7 @@ package screret.screenjs.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -35,11 +36,15 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
         RenderSystem.setShaderTexture(0, menu.builder.backroundTexture);
         this.blit(pPoseStack, this.leftPos, this.topPos, this.imageX, this.imageY, this.imageWidth, this.imageHeight);
 
-        for(var drawable : menu.builder.drawables.entrySet()) {
-            RenderSystem.setShaderTexture(0, drawable.getValue());
-            var position = drawable.getKey().getFirst();
-            var rect = drawable.getKey().getSecond();
+        for(var drawable : menu.builder.drawables) {
+            RenderSystem.setShaderTexture(0, drawable.texture());
+            var position = drawable.renderPoint();
+            var rect = drawable.texturePos();
             this.blit(pPoseStack, position.x, position.y, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        }
+        for (var button : menu.builder.buttons) {
+            var drawable = button.drawable();
+            this.addRenderableWidget(new Button(drawable.renderPoint().x, drawable.renderPoint().y, drawable.texturePos().getWidth(), drawable.texturePos().getHeight(), button.tooltip(), button.methodToRun()));
         }
     }
 
