@@ -14,7 +14,7 @@ StartupEvents.registry('menu', event => {
         })
         .addOutputSlot(118, 118) // adds a slot you can't put an item into, but can pull an item from
         .playerInventoryY(100) // marks the start of the player's inventory on the texture
-        .tintColor(0x00FF00FF) // a color to tint the whole inventory texture, in hexadecimal [r, g, b, a]
+        .tintColor(0x00FF00FF) // a color to tint the whole inventory texture, in hexadecimal [a, r, g, b]
 
     event.create('grass_block' /*name can be anything*/, 'block')
         .addSlot(100, 82)

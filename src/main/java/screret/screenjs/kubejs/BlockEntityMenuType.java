@@ -23,7 +23,7 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<BlockEntityContainerMenu> {
+    public static class Builder extends MenuTypeBuilder<BlockEntityContainerMenu, BlockEntityContainerScreen> {
         public Builder(ResourceLocation i) {
             super(i);
         }

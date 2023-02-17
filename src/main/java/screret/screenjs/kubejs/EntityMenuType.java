@@ -25,7 +25,7 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<EntityContainerMenu> {
+    public static class Builder extends MenuTypeBuilder<EntityContainerMenu, EntityContainerScreen> {
         public transient EntityType<?> openingEntity;
 
 

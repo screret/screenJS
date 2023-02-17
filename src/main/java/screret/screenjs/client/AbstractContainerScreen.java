@@ -19,6 +19,11 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
         this.imageHeight = backroundPos.getHeight();
         this.imageX = backroundPos.getX();
         this.imageY = backroundPos.getY();
+
+        for (var button : menu.builder.buttons) {
+            var position = button.position();
+            this.addRenderableWidget(new Button(position.getX(), position.getY(), position.getWidth(), position.getHeight(), button.tooltip(), button.methodToRun()));
+        }
     }
 
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -42,18 +47,14 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
             var rect = drawable.texturePos();
             this.blit(pPoseStack, position.x, position.y, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
         }
-        for (var button : menu.builder.buttons) {
-            var drawable = button.drawable();
-            this.addRenderableWidget(new Button(drawable.renderPoint().x, drawable.renderPoint().y, drawable.texturePos().getWidth(), drawable.texturePos().getHeight(), button.tooltip(), button.methodToRun()));
-        }
     }
 
     private static float[] decodeARGBToRBGAZeroToOne(int color) {
         float[] array = new float[4];
-        array[0] = ((color & 0xFF0000) >> 16) / 255f;   //red
-        array[1] = ((color & 0xFF00) >> 8) / 255f;      //green
-        array[2] = ((color & 0xFF)) / 255f;             //blue
         array[3] = ((color & 0xFF000000) >> 24) / 255f; //alpha
+        array[0] = ((color & 0x00FF0000) >> 16) / 255f; //red
+        array[1] = ((color & 0x0000FF00) >> 8) / 255f;  //green
+        array[2] = ((color & 0x000000FF)) / 255f;       //blue
         return array;
     }
 }

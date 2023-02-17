@@ -24,9 +24,8 @@ public class ScreenJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerBindings(BindingsEvent event) {
-        event.add("Drawable", MenuTypeBuilder.Drawable.class);
-        event.add("Point", Point.class);
         event.add("Rect2i", Rect2i.class);
+        event.add("MenuUtils", MenuUtils.class);
     }
 
     @Override

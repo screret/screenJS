@@ -7,8 +7,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import screret.screenjs.common.BlockEntityContainerMenu;
 import screret.screenjs.common.EntityContainerMenu;
+
+import static screret.screenjs.MenuUtils.progress;
 
 public class EntityContainerScreen extends AbstractContainerScreen<EntityContainerMenu> {
 
@@ -26,6 +27,11 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
             var size = drawable.texturePos();
 
             switch (drawable.type()) {
+                case CUSTOM -> {
+                    RenderSystem.setShaderTexture(0, drawable.texture());
+                    drawable.drawer().draw(menu, this, drawable, drawable.direction());
+                }
+
                 case PROGRESS -> {
                     if(values.contains("isProcessing") && values.getBoolean("isProcessing")) {
                         int progress = values.getInt("progress");
@@ -141,10 +147,6 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
 
         }
 
-    }
-
-    public int progress(int max, int current, int width) {
-        return max * width / current;
     }
 
 }

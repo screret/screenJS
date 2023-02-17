@@ -8,6 +8,9 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import screret.screenjs.common.BlockEntityContainerMenu;
+import screret.screenjs.kubejs.MenuTypeBuilder;
+
+import static screret.screenjs.MenuUtils.progress;
 
 public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEntityContainerMenu> {
 
@@ -25,8 +28,13 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
             var size = drawable.texturePos();
 
             switch (drawable.type()) {
+                case CUSTOM -> {
+                    RenderSystem.setShaderTexture(0, drawable.texture());
+                    drawable.drawer().draw(menu, this, drawable, drawable.direction());
+                }
+
                 case PROGRESS -> {
-                    if(values.contains("isProcessing") && values.getBoolean("isProcessing")) {
+                    if (values.contains("isProcessing") && values.getBoolean("isProcessing")) {
                         int progress = values.getInt("progress");
                         int maxProgress = values.getInt("totalProgress");
                         RenderSystem.setShaderTexture(0, drawable.texture());
@@ -80,7 +88,7 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
 
                 case ENERGY -> {
                     IEnergyStorage energyCap = this.menu.blockEntity.getCapability(ForgeCapabilities.ENERGY).orElse(null);
-                    if(energyCap != null) {
+                    if (energyCap != null) {
                         int energy = energyCap.getEnergyStored();
                         int maxEnergy = energyCap.getMaxEnergyStored();
                         RenderSystem.setShaderTexture(0, drawable.texture());
@@ -106,11 +114,10 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
                     }
                 }
 
-
                 case FLUID -> {
                     IFluidHandler fluidCap = this.menu.blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).orElse(null);
                     int tankIndex = drawable.handlerIndex();
-                    if(fluidCap != null && tankIndex != -1) {
+                    if (fluidCap != null && tankIndex != -1) {
                         int fluid = fluidCap.getFluidInTank(tankIndex).getAmount();
                         int maxFluid = fluidCap.getTankCapacity(tankIndex);
                         RenderSystem.setShaderTexture(0, drawable.texture());
@@ -137,13 +144,8 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
                 }
 
             }
-
         }
 
-    }
-
-    public int progress(int max, int current, int width) {
-        return max * width / current;
     }
 
 }

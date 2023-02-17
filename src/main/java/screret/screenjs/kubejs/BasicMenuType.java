@@ -14,7 +14,7 @@ public class BasicMenuType extends MenuType<BasicContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<BasicContainerMenu> {
+    public static class Builder extends MenuTypeBuilder<BasicContainerMenu, BasicContainerScreen> {
         public Builder(ResourceLocation i) {
             super(i);
         }
