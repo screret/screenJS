@@ -9,20 +9,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import screret.screenjs.misc.AbstractContainerMenu;
 
+import java.awt.*;
+
 public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<T> {
     private final int imageX, imageY;
 
     public AbstractContainerScreen(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
-        Rect2i backroundPos = menu.builder.backroundPosition;
-        this.imageWidth = backroundPos.getWidth();
-        this.imageHeight = backroundPos.getHeight();
-        this.imageX = backroundPos.getX();
-        this.imageY = backroundPos.getY();
+        Rectangle backroundPos = menu.builder.backroundPosition;
+        this.imageWidth = (int) backroundPos.getWidth();
+        this.imageHeight = (int) backroundPos.getHeight();
+        this.imageX = (int) backroundPos.getX();
+        this.imageY = (int) backroundPos.getY();
 
         for (var button : menu.builder.buttons) {
             var position = button.position();
-            this.addRenderableWidget(new Button(position.getX(), position.getY(), position.getWidth(), position.getHeight(), button.tooltip(), button.methodToRun()));
+            this.addRenderableWidget(new Button((int) position.getX(), (int) position.getY(), (int) position.getWidth(), (int) position.getHeight(), button.tooltip(), pButton -> button.methodToRun().onPress(pButton)));
         }
     }
 
@@ -45,7 +47,7 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
             RenderSystem.setShaderTexture(0, drawable.texture());
             var position = drawable.renderPoint();
             var rect = drawable.texturePos();
-            this.blit(pPoseStack, position.x, position.y, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            this.blit(pPoseStack, position.x, position.y, (int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
         }
     }
 

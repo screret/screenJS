@@ -1,10 +1,12 @@
 package screret.screenjs.kubejs;
 
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.network.IContainerFactory;
 import screret.bejs.kubejs.BlockEntityJS;
 import screret.screenjs.common.BlockEntityContainerMenu;
@@ -23,15 +25,23 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<BlockEntityContainerMenu, BlockEntityContainerScreen> {
+    public static class Builder extends MenuTypeBuilder<BlockEntityContainerMenu> {
+        public transient BlockEntityType<?> openingBlockEntity;
         public Builder(ResourceLocation i) {
             super(i);
+            this.openingBlockEntity = null;
         }
 
         @Override
-        public MenuScreens.ScreenConstructor<BlockEntityContainerMenu, BlockEntityContainerScreen> getScreenConstructor() {
+        public ScreenConstructor getScreenConstructor() {
             return BlockEntityContainerScreen::new;
         }
+
+        public Builder setBlockEntity(ResourceLocation blockEntity) {
+            this.openingBlockEntity = KubeJSRegistries.blockEntityTypes().get(blockEntity);
+            return this;
+        }
+
 
         @Override
         public BlockEntityMenuType createObject() {

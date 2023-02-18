@@ -25,7 +25,7 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<EntityContainerMenu, EntityContainerScreen> {
+    public static class Builder extends MenuTypeBuilder<EntityContainerMenu> {
         public transient EntityType<?> openingEntity;
 
 
@@ -34,7 +34,7 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
         }
 
         @Override
-        public MenuScreens.ScreenConstructor<EntityContainerMenu, EntityContainerScreen> getScreenConstructor() {
+        public ScreenConstructor getScreenConstructor() {
             return EntityContainerScreen::new;
         }
 

@@ -11,13 +11,13 @@ import screret.screenjs.kubejs.MenuTypeBuilder;
 import javax.annotation.Nonnull;
 
 public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> extends net.minecraft.world.inventory.AbstractContainerMenu {
-    public final MenuTypeBuilder<T, ?> builder;
+    public final MenuTypeBuilder<T> builder;
     public int containerSlotCount = 0;
 
     public final Level level;
     public final Player player;
 
-    public AbstractContainerMenu(MenuTypeBuilder<T, ?> builder, int pContainerId, Inventory pPlayerInventory, Object... params) {
+    public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory, Object... params) {
         super(builder.get(), pContainerId);
         this.builder = builder;
         this.level = pPlayerInventory.player.level;
@@ -27,7 +27,7 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
 
         if(builder.addInventorySlots) {
             if(builder.playerInvYStart == -1) {
-                builder.playerInvYStart = builder.backroundPosition.getHeight() - 94;
+                builder.playerInvYStart = (int) (builder.backroundPosition.getHeight() - 94);
             }
 
             for(int y = 0; y < 3; ++y) {

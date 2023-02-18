@@ -14,13 +14,13 @@ public class BasicMenuType extends MenuType<BasicContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<BasicContainerMenu, BasicContainerScreen> {
+    public static class Builder extends MenuTypeBuilder<BasicContainerMenu> {
         public Builder(ResourceLocation i) {
             super(i);
         }
 
         @Override
-        public MenuScreens.ScreenConstructor<BasicContainerMenu, BasicContainerScreen> getScreenConstructor() {
+        public ScreenConstructor getScreenConstructor() {
             return BasicContainerScreen::new;
         }
 

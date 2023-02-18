@@ -25,7 +25,7 @@ public class BlockMenuType extends MenuType<BlockContainerMenu> {
         this.id = builder.id;
     }
 
-    public static class Builder extends MenuTypeBuilder<BlockContainerMenu, BlockContainerScreen> {
+    public static class Builder extends MenuTypeBuilder<BlockContainerMenu> {
         public transient Block openingBlock;
 
         public Builder(ResourceLocation i) {
@@ -34,7 +34,7 @@ public class BlockMenuType extends MenuType<BlockContainerMenu> {
         }
 
         @Override
-        public MenuScreens.ScreenConstructor<BlockContainerMenu, BlockContainerScreen> getScreenConstructor() {
+        public ScreenConstructor getScreenConstructor() {
             return BlockContainerScreen::new;
         }
 

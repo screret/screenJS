@@ -5,17 +5,23 @@ import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.util.color.SimpleColor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import screret.screenjs.ScreenJSPlugin;
+import screret.screenjs.client.AbstractContainerScreen;
 import screret.screenjs.misc.AbstractContainerMenu;
 import screret.screenjs.misc.OutputSlotSupplier;
 import screret.screenjs.misc.SlotSupplier;
@@ -24,12 +30,13 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
-public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S extends AbstractContainerScreen<M>> extends BuilderBase<MenuType<M>> {
+public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extends BuilderBase<MenuType<M>> {
     private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
 
     public transient List<SlotSupplier> slots;
@@ -37,7 +44,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S exte
     public transient List<ProgressDrawable> progressDrawables;
     public transient List<Button> buttons;
     public transient ResourceLocation backroundTexture;
-    public transient Rect2i backroundPosition;
+    public transient Rectangle backroundPosition;
     public transient int tintColor;
     public transient int playerInvYStart;
 
@@ -53,7 +60,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S exte
         progressDrawables = new ArrayList<>();
         buttons = new ArrayList<>();
         backroundTexture = DEFAULT_BACKGROUND;
-        backroundPosition = new Rect2i(0, 0, 176, 166);
+        backroundPosition = new Rectangle(0, 0, 176, 166);
         tintColor = SimpleColor.WHITE.getArgbJS();
         this.playerInvYStart = -1;
         this.quickMoveFunction = MenuTypeBuilder::quickMoveStack;
@@ -66,75 +73,75 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S exte
         return ScreenJSPlugin.MENU_TYPE;
     }
 
-    public abstract MenuScreens.ScreenConstructor<M, S> getScreenConstructor();
+    public abstract ScreenConstructor getScreenConstructor();
 
-    public MenuTypeBuilder<M, S> addSlot(int x, int y) {
+    public MenuTypeBuilder<M> addSlot(int x, int y) {
         slots.add(new SlotSupplier(slots.size(), x, y));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> addOutputSlot(int x, int y) {
+    public MenuTypeBuilder<M> addOutputSlot(int x, int y) {
         slots.add(new OutputSlotSupplier(slots.size(), x, y));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> loop(Consumer<MenuTypeBuilder<M, S>> consumer) {
+    public MenuTypeBuilder<M> loop(Consumer<MenuTypeBuilder<M>> consumer) {
         consumer.accept(this);
         return this;
     }
 
-    public MenuTypeBuilder<M, S> tintColor(Color color) {
+    public MenuTypeBuilder<M> tintColor(Color color) {
         this.tintColor = color.getArgbJS();
         return this;
     }
 
-    public MenuTypeBuilder<M, S> drawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc) {
-        drawables.add(new Drawable(new Point(xPos, yPos), new Rect2i(x, y, u, v), texureLoc));
+    public MenuTypeBuilder<M> drawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc) {
+        drawables.add(new Drawable(new Point(xPos, yPos), new Rectangle(x, y, u, v), texureLoc));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> progressDrawable(int xPos, int yPos, Rect2i texturePos, ResourceLocation texureLoc, String direction, String type) {
-        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.valueOf(type), -1, null));
+    public MenuTypeBuilder<M> progressDrawable(int xPos, int yPos, Rectangle texturePos, ResourceLocation texureLoc, String direction, String type) {
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction.toUpperCase(Locale.ROOT)), ProgressDrawableType.valueOf(type.toUpperCase(Locale.ROOT)), -1, null));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> fluidDrawable(int xPos, int yPos, Rect2i texturePos, ResourceLocation texureLoc, String direction, int tankIndex) {
-        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.FLUID, tankIndex, null));
+    public MenuTypeBuilder<M> fluidDrawable(int xPos, int yPos, Rectangle texturePos, ResourceLocation texureLoc, String direction, int tankIndex) {
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction.toUpperCase(Locale.ROOT)), ProgressDrawableType.FLUID, tankIndex, null));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> customDrawable(int xPos, int yPos, Rect2i texturePos, ResourceLocation texureLoc, String direction, DrawMethodJS drawer) {
-        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction), ProgressDrawableType.CUSTOM, -1, drawer));
+    public MenuTypeBuilder<M> customDrawable(int xPos, int yPos, Rectangle texturePos, ResourceLocation texureLoc, String direction, DrawMethodJS drawer) {
+        progressDrawables.add(new ProgressDrawable(new Point(xPos, yPos), texturePos, texureLoc, MoveDirection.valueOf(direction.toUpperCase(Locale.ROOT)), ProgressDrawableType.CUSTOM, -1, drawer));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> button(Rect2i position, Component tooltip, net.minecraft.client.gui.components.Button.OnPress methodToRun) {
+    public MenuTypeBuilder<M> button(Rectangle position, Component tooltip, OnPress methodToRun) {
         buttons.add(new Button(position, tooltip, methodToRun));
         return this;
     }
 
-    public MenuTypeBuilder<M, S> backroundTexture(String textureLocation, int x, int y, int u, int v) {
+    public MenuTypeBuilder<M> backroundTexture(String textureLocation, int x, int y, int u, int v) {
         this.backroundTexture = new ResourceLocation(textureLocation);
-        backroundPosition = new Rect2i(x, y, u, v);
+        backroundPosition = new Rectangle(x, y, u, v);
         return this;
     }
 
-    public MenuTypeBuilder<M, S> quickMoveFunc(QuickMoveFuncJS func) {
+    public MenuTypeBuilder<M> quickMoveFunc(QuickMoveFuncJS func) {
         quickMoveFunction = func;
         return this;
     }
 
-    public MenuTypeBuilder<M, S> validityFunc(BiFunction<Player, Vec3, Boolean> func) {
+    public MenuTypeBuilder<M> validityFunc(BiFunction<Player, Vec3, Boolean> func) {
         validFunction = func;
         return this;
     }
 
-    public MenuTypeBuilder<M, S> disablePlayerInventory() {
+    public MenuTypeBuilder<M> disablePlayerInventory() {
         this.addInventorySlots = false;
         return this;
     }
 
-    public MenuTypeBuilder<M, S> playerInventoryY(int yHeight) {
+    public MenuTypeBuilder<M> playerInventoryY(int yHeight) {
         playerInvYStart = yHeight;
         return this;
     }
@@ -142,7 +149,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S exte
 
     @Override
     public void clientRegistry(Supplier<Minecraft> minecraft) {
-        MenuScreens.register(get(), getScreenConstructor());
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MenuScreens.<M, AbstractContainerScreen<M>>register(get(), (pMenu, pInventory, pTitle) -> (AbstractContainerScreen<M>) getScreenConstructor().create(pMenu, pInventory, pTitle)));
     }
 
     public static ItemStack quickMoveStack(Player pPlayer, int pIndex, AbstractContainerMenu<?> menu) {
@@ -194,8 +201,23 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>, S exte
         CUSTOM,
     }
 
-    public record Drawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture) {}
-    public record ProgressDrawable(Point renderPoint, Rect2i texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type, int handlerIndex, @Nullable DrawMethodJS drawer) {}
-    public record Button(Rect2i position, Component tooltip, net.minecraft.client.gui.components.Button.OnPress methodToRun) {}
+    public record Drawable(Point renderPoint, Rectangle texturePos, ResourceLocation texture) {}
+    public record ProgressDrawable(Point renderPoint, Rectangle texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type, int handlerIndex, @Nullable DrawMethodJS drawer) {}
+    public record Button(Rectangle position, Component tooltip, OnPress methodToRun) {}
+
+    @FunctionalInterface
+    public interface OnPress {
+        void onPress(net.minecraft.client.gui.components.Button pButton);
+    }
+
+    public interface ScreenConstructor {
+        default void fromPacket(Component pTitle, MenuType<AbstractContainerMenu<?>> pType, Minecraft pMc, int pWindowId) {
+            AbstractContainerScreen<?> u = this.create(pType.create(pWindowId, pMc.player.getInventory()), pMc.player.getInventory(), pTitle);
+            pMc.player.containerMenu = u.getMenu();
+            pMc.setScreen(u);
+        }
+
+        AbstractContainerScreen<? extends AbstractContainerMenu<?>> create(AbstractContainerMenu<?> pMenu, Inventory pInventory, Component pTitle);
+    }
 
 }
