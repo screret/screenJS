@@ -60,9 +60,9 @@ public class ScreenJS {
 
     public void commonSetup(final FMLCommonSetupEvent event) {
         int index = 0;
-        CHANNEL.registerMessage(index++, C2SRequestCapabilities.class, C2SRequestCapabilities::encode, C2SRequestCapabilities::new, C2SRequestCapabilities::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
-        CHANNEL.registerMessage(index++, S2CSyncBlockEntityCapability.class, S2CSyncBlockEntityCapability::encode, S2CSyncBlockEntityCapability::new, S2CSyncBlockEntityCapability::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-        CHANNEL.registerMessage(index++, S2CSyncEntityCapability.class, S2CSyncEntityCapability::encode, S2CSyncEntityCapability::new, S2CSyncEntityCapability::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(index++, C2SRequestSync.class, C2SRequestSync::encode, C2SRequestSync::new, C2SRequestSync::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        CHANNEL.registerMessage(index++, S2CSyncBlockEntity.class, S2CSyncBlockEntity::encode, S2CSyncBlockEntity::new, S2CSyncBlockEntity::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(index++, S2CSyncEntity.class, S2CSyncEntity::encode, S2CSyncEntity::new, S2CSyncEntity::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
     private static BuilderBase[] builders = null;
@@ -86,7 +86,7 @@ public class ScreenJS {
                     NetworkHooks.openScreen((ServerPlayer) entity,
                             new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
                                     new BlockEntityContainerMenu(beBuilder, pContainerId, pPlayerInventory, be), be instanceof Nameable nameable ? nameable.getName() : be.getBlockState().getBlock().getName()),
-                            be.getBlockPos());
+                            event.getPos());
                     event.setCanceled(true);
                 } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
                     NetworkHooks.openScreen((ServerPlayer) entity,
@@ -111,7 +111,8 @@ public class ScreenJS {
                     if(entity == entityBuilder.openingEntity) {
                         NetworkHooks.openScreen((ServerPlayer) player,
                                 new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
-                                        new EntityContainerMenu(entityBuilder, pContainerId, pPlayerInventory, target), target.getName()), buf -> buf.writeVarInt(target.getId()));
+                                        new EntityContainerMenu(entityBuilder, pContainerId, pPlayerInventory, target), target.getName()),
+                                buf -> buf.writeVarInt(target.getId()));
                         event.setCancellationResult(InteractionResult.CONSUME);
                     }
                 }

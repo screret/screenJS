@@ -14,8 +14,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.NetworkDirection;
 import screret.screenjs.ScreenJS;
 import screret.screenjs.kubejs.BlockEntityMenuType;
-import screret.screenjs.misc.AbstractContainerMenu;
-import screret.screenjs.packets.S2CSyncBlockEntityCapability;
+import screret.screenjs.packets.S2CSyncBlockEntity;
 
 public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityContainerMenu> {
     public final BlockEntity blockEntity;
@@ -43,7 +42,7 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
     public void broadcastChanges() {
         super.broadcastChanges();
         if (player instanceof ServerPlayer sp) {
-            ScreenJS.CHANNEL.sendTo(new S2CSyncBlockEntityCapability(this.blockEntity.getBlockPos(), this.blockEntity.saveWithoutMetadata()),
+            ScreenJS.CHANNEL.sendTo(new S2CSyncBlockEntity(this.blockEntity.getBlockPos(), this.blockEntity.saveWithoutMetadata()),
                     sp.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         }
     }

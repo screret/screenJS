@@ -2,17 +2,16 @@ package screret.screenjs.packets;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import screret.screenjs.ScreenJS;
 
 import java.util.function.Supplier;
 
-public class C2SRequestCapabilities {
+public class C2SRequestSync {
 
-    public C2SRequestCapabilities() {
+    public C2SRequestSync() {
 
     }
 
-    public C2SRequestCapabilities(FriendlyByteBuf buf) {
+    public C2SRequestSync(FriendlyByteBuf buf) {
 
     }
 

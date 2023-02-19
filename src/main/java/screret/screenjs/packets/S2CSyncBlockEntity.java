@@ -5,20 +5,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
-import screret.screenjs.ScreenJS;
 
 import java.util.function.Supplier;
 
-public class S2CSyncBlockEntityCapability {
+public class S2CSyncBlockEntity {
     private final BlockPos pos;
     private final CompoundTag tag;
 
-    public S2CSyncBlockEntityCapability(BlockPos pos, CompoundTag tag) {
+    public S2CSyncBlockEntity(BlockPos pos, CompoundTag tag) {
         this.pos = pos;
         this.tag = tag;
     }
 
-    public S2CSyncBlockEntityCapability(FriendlyByteBuf byteBuf) {
+    public S2CSyncBlockEntity(FriendlyByteBuf byteBuf) {
         this.pos = byteBuf.readBlockPos();
         this.tag = byteBuf.readAnySizeNbt();
     }

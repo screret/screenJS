@@ -3,7 +3,6 @@ package screret.screenjs.common;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.ItemStackHandler;
 import screret.screenjs.kubejs.BasicMenuType;
-import screret.screenjs.misc.AbstractContainerMenu;
 
 public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu> {
 

@@ -1,11 +1,10 @@
-package screret.screenjs.misc;
+package screret.screenjs.common;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import screret.screenjs.kubejs.MenuTypeBuilder;
 
 import javax.annotation.Nonnull;

@@ -5,11 +5,7 @@ import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.util.color.SimpleColor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import screret.screenjs.ScreenJSPlugin;
 import screret.screenjs.client.AbstractContainerScreen;
-import screret.screenjs.misc.AbstractContainerMenu;
+import screret.screenjs.common.AbstractContainerMenu;
 import screret.screenjs.misc.OutputSlotSupplier;
 import screret.screenjs.misc.SlotSupplier;
 
@@ -95,8 +91,8 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    public MenuTypeBuilder<M> drawable(int xPos, int yPos, int x, int y, int u, int v, ResourceLocation texureLoc) {
-        drawables.add(new Drawable(new Point(xPos, yPos), new Rectangle(x, y, u, v), texureLoc));
+    public MenuTypeBuilder<M> drawable(int xPos, int yPos, Rectangle texturePos, ResourceLocation texureLoc) {
+        drawables.add(new Drawable(new Point(xPos, yPos), texturePos, texureLoc));
         return this;
     }
 
@@ -183,7 +179,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     @FunctionalInterface
     public interface DrawMethodJS {
-        void draw(AbstractContainerMenu<?> menu, screret.screenjs.client.AbstractContainerScreen<?> screen, ProgressDrawable drawable, MoveDirection direction);
+        void draw(AbstractContainerMenu<?> menu, AbstractContainerScreen<?> screen, ProgressDrawable drawable, MoveDirection direction);
     }
 
     public enum MoveDirection {

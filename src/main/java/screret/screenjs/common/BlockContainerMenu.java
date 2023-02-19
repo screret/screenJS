@@ -7,7 +7,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.ItemStackHandler;
-import screret.screenjs.misc.AbstractContainerMenu;
 import screret.screenjs.kubejs.BlockMenuType;
 import screret.screenjs.misc.OutputSlot;
 
