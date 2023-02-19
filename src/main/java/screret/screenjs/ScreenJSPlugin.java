@@ -33,6 +33,6 @@ public class ScreenJSPlugin extends KubeJSPlugin {
         MENU_TYPE.addType("basic", BasicMenuType.Builder.class, BasicMenuType.Builder::new);
         MENU_TYPE.addType("block", BlockMenuType.Builder.class, BlockMenuType.Builder::new);
         MENU_TYPE.addType("entity", EntityMenuType.Builder.class, EntityMenuType.Builder::new);
-        if(Platform.isModLoaded("bejs")) MENU_TYPE.addType("block_entity", BlockEntityMenuType.Builder.class, BlockEntityMenuType.Builder::new);
+        MENU_TYPE.addType("block_entity", BlockEntityMenuType.Builder.class, BlockEntityMenuType.Builder::new);
     }
 }

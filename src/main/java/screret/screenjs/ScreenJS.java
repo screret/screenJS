@@ -88,12 +88,14 @@ public class ScreenJS {
                                     new BlockEntityContainerMenu(beBuilder, pContainerId, pPlayerInventory, be), be instanceof Nameable nameable ? nameable.getName() : be.getBlockState().getBlock().getName()),
                             event.getPos());
                     event.setCanceled(true);
+                    break;
                 } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
                     NetworkHooks.openScreen((ServerPlayer) entity,
                             new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
                                     new BlockContainerMenu(blockBuilder, pContainerId, pPlayerInventory, ContainerLevelAccess.create(entity.level, event.getPos()), block), blockBuilder.openingBlock.getName()),
                             event.getPos());
                     event.setCanceled(true);
+                    break;
                 }
             }
         }
@@ -114,6 +116,7 @@ public class ScreenJS {
                                         new EntityContainerMenu(entityBuilder, pContainerId, pPlayerInventory, target), target.getName()),
                                 buf -> buf.writeVarInt(target.getId()));
                         event.setCancellationResult(InteractionResult.CONSUME);
+                        break;
                     }
                 }
             }
