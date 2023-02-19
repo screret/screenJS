@@ -6,9 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.network.IContainerFactory;
-import screret.bejs.kubejs.BlockEntityJS;
 import screret.screenjs.common.BlockEntityContainerMenu;
 import screret.screenjs.client.BlockEntityContainerScreen;
 
@@ -19,7 +19,7 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         super((IContainerFactory<BlockEntityContainerMenu>)((pContainerId, inventory, extraData) -> {
             BlockPos pos = extraData.readBlockPos();
             Level world = inventory.player.getLevel();
-            BlockEntityJS tile = (BlockEntityJS) world.getBlockEntity(pos);
+            BlockEntity tile = world.getBlockEntity(pos);
             return new BlockEntityContainerMenu(builder, pContainerId, inventory, tile);
         }));
         this.id = builder.id;
