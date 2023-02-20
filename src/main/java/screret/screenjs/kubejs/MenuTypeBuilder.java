@@ -13,9 +13,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import screret.screenjs.ScreenJSPlugin;
 import screret.screenjs.client.AbstractContainerScreen;
 import screret.screenjs.common.AbstractContainerMenu;
@@ -44,6 +47,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     public transient int tintColor;
     public transient int playerInvYStart;
 
+    public transient SlotChangedCallback slotChanged;
     public transient QuickMoveFuncJS quickMoveFunction;
     public transient BiFunction<Player, Vec3, Boolean> validFunction;
 
@@ -59,6 +63,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         backroundPosition = new Rectangle(0, 0, 176, 166);
         tintColor = SimpleColor.WHITE.getArgbJS();
         this.playerInvYStart = -1;
+        this.slotChanged = null;
         this.quickMoveFunction = MenuTypeBuilder::quickMoveStack;
         this.validFunction = ((player, pos) -> player.distanceToSqr(pos) < 8 * 8);
         this.addInventorySlots = true;
@@ -116,14 +121,19 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    public MenuTypeBuilder<M> backroundTexture(String textureLocation, int x, int y, int u, int v) {
-        this.backroundTexture = new ResourceLocation(textureLocation);
-        backroundPosition = new Rectangle(x, y, u, v);
+    public MenuTypeBuilder<M> backroundTexture(ResourceLocation textureLocation, Rectangle texturePosition) {
+        this.backroundTexture = textureLocation;
+        this.backroundPosition = texturePosition;
         return this;
     }
 
     public MenuTypeBuilder<M> quickMoveFunc(QuickMoveFuncJS func) {
         quickMoveFunction = func;
+        return this;
+    }
+
+    public MenuTypeBuilder<M> slotChanged(SlotChangedCallback func) {
+        slotChanged = func;
         return this;
     }
 
@@ -180,6 +190,11 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     @FunctionalInterface
     public interface DrawMethodJS {
         void draw(AbstractContainerMenu<?> menu, AbstractContainerScreen<?> screen, ProgressDrawable drawable, MoveDirection direction);
+    }
+
+    @FunctionalInterface
+    public interface SlotChangedCallback {
+        void changed(AbstractContainerMenu<?> menu, Level level, Player player, IItemHandler itemHandler);
     }
 
     public enum MoveDirection {

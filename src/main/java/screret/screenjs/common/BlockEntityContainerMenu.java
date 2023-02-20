@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.EntityBlock;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkDirection;
 import screret.screenjs.ScreenJS;
 import screret.screenjs.kubejs.BlockEntityMenuType;
@@ -21,6 +23,7 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
     public final boolean doesTick;
 
     public final Int2ObjectMap<CompoundTag> tag = new Int2ObjectOpenHashMap<>();
+    private IItemHandler itemHandler;
 
     public BlockEntityContainerMenu(BlockEntityMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory, BlockEntity blockEntity) {
         super(builder, pContainerId, pPlayerInventory, blockEntity);
@@ -31,11 +34,16 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
     @Override
     public void addSlots(Object[] params) {
         BlockEntity blockEntity = (BlockEntity) params[0];
-        IItemHandler beItemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalStateException("BlockEntityJS didn't have an IItemHandler capability."));
+        this.itemHandler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalStateException("BlockEntityJS didn't have an IItemHandler capability."));
         for(var slot : builder.slots) {
-            this.addSlot(slot.create(beItemHandler));
+            this.addSlot(slot.create(this.itemHandler));
             this.containerSlotCount++;
         }
+    }
+
+    @Override
+    public void slotsChanged(Container pInventory) {
+        this.builder.slotChanged.changed(this, level, this.player, this.itemHandler);
     }
 
     @Override

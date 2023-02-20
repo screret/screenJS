@@ -1,5 +1,6 @@
 package screret.screenjs.common;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -42,6 +43,11 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
     }
 
     public abstract void addSlots(Object[] params);
+
+    @Override
+    public void slotsChanged(Container pContainer) {
+        super.slotsChanged(pContainer);
+    }
 
     @Nonnull
     @Override

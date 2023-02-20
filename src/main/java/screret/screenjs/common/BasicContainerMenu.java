@@ -1,5 +1,6 @@
 package screret.screenjs.common;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.ItemStackHandler;
 import screret.screenjs.kubejs.BasicMenuType;
@@ -12,6 +13,13 @@ public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu
         super(builder, pContainerId, pPlayerInventory);
         slots = new ItemStackHandler(builder.slots.size());
     }
+
+    @Override
+    public void slotsChanged(Container pInventory) {
+        this.builder.slotChanged.changed(this, level, this.player, this.slots);
+    }
+
+
 
     @Override
     public void addSlots(Object[] params) {

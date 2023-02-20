@@ -2,6 +2,7 @@ package screret.screenjs.common;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,12 +27,16 @@ public class EntityContainerMenu extends AbstractContainerMenu<EntityContainerMe
     @Override
     public void addSlots(Object[] params) {
         Entity ent = (Entity) params[0];
-        IItemHandler cap = ent.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalStateException("Entity didn't have an IItemHandler capability."));
-        this.itemHandler = cap;
+        this.itemHandler = ent.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalStateException("Entity didn't have an IItemHandler capability."));
         for (var slot : builder.slots) {
             this.addSlot(slot.create(this.itemHandler));
             this.containerSlotCount++;
         }
+    }
+
+    @Override
+    public void slotsChanged(Container pInventory) {
+        this.builder.slotChanged.changed(this, level, this.player, this.itemHandler);
     }
 
     @Override

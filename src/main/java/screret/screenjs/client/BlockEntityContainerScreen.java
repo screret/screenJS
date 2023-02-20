@@ -42,7 +42,7 @@ public class BlockEntityContainerScreen extends AbstractContainerScreen<BlockEnt
                 }
 
                 case PROGRESS -> {
-                    if (values.contains("isProcessing") && values.getBoolean("isProcessing")) {
+                    if (values.contains("progress") && values.contains("totalProgress")) {
                         int progress = values.getInt("progress");
                         int maxProgress = values.getInt("totalProgress");
                         RenderSystem.setShaderTexture(0, drawable.texture());

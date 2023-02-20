@@ -1,5 +1,6 @@
 package screret.screenjs.common;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -7,6 +8,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 import screret.screenjs.kubejs.BlockMenuType;
 import screret.screenjs.misc.OutputSlot;
 
@@ -38,15 +40,16 @@ public class BlockContainerMenu extends AbstractContainerMenu<BlockContainerMenu
     @Override
     public void removed(Player pPlayer) {
         super.removed(pPlayer);
-        if (!pPlayer.level.isClientSide) {
-            for (var slot : this.slots) {
-                ItemStack itemstack = slot.remove(slot.getMaxStackSize());
-                if (!itemstack.isEmpty()) {
-                    pPlayer.drop(itemstack, false);
-                }
-            }
+        this.access.execute((level, pos) -> {
+            this.clearContainer(pPlayer, new RecipeWrapper(itemHandler));
+        });
+    }
 
-        }
+    @Override
+    public void slotsChanged(Container pInventory) {
+        this.access.execute((level, pos) -> {
+            this.builder.slotChanged.changed(this, level, this.player, this.itemHandler);
+        });
     }
 
     @Override
