@@ -43,7 +43,9 @@ public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityC
 
     @Override
     public void slotsChanged(Container pInventory) {
-        this.builder.slotChanged.changed(this, level, this.player, this.itemHandler);
+        if(this.builder.slotChanged != null) {
+            this.builder.slotChanged.changed(this, level, this.player, this.itemHandler);
+        }
     }
 
     @Override

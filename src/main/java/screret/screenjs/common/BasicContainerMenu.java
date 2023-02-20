@@ -16,7 +16,9 @@ public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu
 
     @Override
     public void slotsChanged(Container pInventory) {
-        this.builder.slotChanged.changed(this, level, this.player, this.slots);
+        if(this.builder.slotChanged != null) {
+            this.builder.slotChanged.changed(this, level, this.player, this.slots);
+        }
     }
 
 
