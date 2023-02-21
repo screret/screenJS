@@ -8,7 +8,9 @@ import dev.latvian.mods.kubejs.script.BindingsEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 import screret.screenjs.kubejs.*;
+import screret.screenjs.misc.CraftingWrapper;
 
 import java.awt.*;
 
@@ -26,6 +28,8 @@ public class ScreenJSPlugin extends KubeJSPlugin {
     public void registerBindings(BindingsEvent event) {
         event.add("Rectangle", Rectangle.class);
         event.add("MenuUtils", MenuUtils.class);
+        event.add("CraftingWrapper", CraftingWrapper.class);
+        event.add("RecipeWrapper", RecipeWrapper.class);
     }
 
     @Override

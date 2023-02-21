@@ -1,6 +1,5 @@
 package screret.screenjs.common;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -17,14 +16,17 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
     public final Level level;
     public final Player player;
 
-    public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory, Object... params) {
+    public AbstractContainerMenu(MenuTypeBuilder<T> builder, int pContainerId, Inventory pPlayerInventory) {
         super(builder.get(), pContainerId);
         this.builder = builder;
         this.level = pPlayerInventory.player.level;
         this.player = pPlayerInventory.player;
+    }
 
-        this.addSlots(params);
+    public abstract void addSlots();
 
+
+    public void addInventory(MenuTypeBuilder<T> builder, Inventory playerInv) {
         if(builder.addInventorySlots) {
             if(builder.playerInvYStart == -1) {
                 builder.playerInvYStart = (int) (builder.backroundPosition.getHeight() - 94);
@@ -32,21 +34,14 @@ public abstract class AbstractContainerMenu<T extends AbstractContainerMenu<T>> 
 
             for(int y = 0; y < 3; ++y) {
                 for(int x = 0; x < 9; ++x) {
-                    this.addSlot(new Slot(pPlayerInventory, x + y * 9 + 9, 8 + x * 18, y * 18 + builder.playerInvYStart));
+                    this.addSlot(new Slot(playerInv, x + y * 9 + 9, 8 + x * 18, y * 18 + builder.playerInvYStart));
                 }
             }
 
             for(int x = 0; x < 9; ++x) {
-                this.addSlot(new Slot(pPlayerInventory, x, 8 + x * 18, builder.playerInvYStart + 58));
+                this.addSlot(new Slot(playerInv, x, 8 + x * 18, builder.playerInvYStart + 58));
             }
         }
-    }
-
-    public abstract void addSlots(Object[] params);
-
-    @Override
-    public void slotsChanged(Container pContainer) {
-        super.slotsChanged(pContainer);
     }
 
     @Nonnull

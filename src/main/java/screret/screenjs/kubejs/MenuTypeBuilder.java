@@ -8,17 +8,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import screret.bejs.misc.IMultipleItemHandler;
 import screret.screenjs.ScreenJSPlugin;
 import screret.screenjs.client.AbstractContainerScreen;
 import screret.screenjs.common.AbstractContainerMenu;
@@ -39,6 +42,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation("textures/gui/container/generic_54.png");
 
     public transient List<SlotSupplier> slots;
+    public transient int[] inputSlotIndices;
     public transient List<Drawable> drawables;
     public transient List<ProgressDrawable> progressDrawables;
     public transient List<Button> buttons;
@@ -77,12 +81,27 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     public abstract ScreenConstructor getScreenConstructor();
 
     public MenuTypeBuilder<M> addSlot(int x, int y) {
-        slots.add(new SlotSupplier(slots.size(), x, y));
+        slots.add(new SlotSupplier(slots.size(), 0, x, y));
         return this;
     }
 
-    public MenuTypeBuilder<M> addOutputSlot(int x, int y) {
-        slots.add(new OutputSlotSupplier(slots.size(), x, y));
+    public MenuTypeBuilder<M> addSlot(int x, int y, int slotIndex, int containerIndex) {
+        slots.add(new SlotSupplier(slotIndex, containerIndex, x, y));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> addOutputSlot(int x, int y, int slotIndex) {
+        slots.add(new OutputSlotSupplier(slotIndex, 0, 0, x, y, null));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> addOutputSlot(int x, int y, int slotIndex, int inputIndex, int outputIndex, @Nullable RecipeType<? extends Recipe<Container>> recipeType) {
+        slots.add(new OutputSlotSupplier(slotIndex, inputIndex, outputIndex, x, y, recipeType));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> inputSlotIndices(int... slots) {
+        inputSlotIndices = slots;
         return this;
     }
 
@@ -152,7 +171,6 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-
     @Override
     public void clientRegistry(Supplier<Minecraft> minecraft) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MenuScreens.<M, AbstractContainerScreen<M>>register(get(), (pMenu, pInventory, pTitle) -> (AbstractContainerScreen<M>) getScreenConstructor().create(pMenu, pInventory, pTitle)));
@@ -194,7 +212,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     @FunctionalInterface
     public interface SlotChangedCallback {
-        void changed(AbstractContainerMenu<?> menu, Level level, Player player, IItemHandler itemHandler);
+        void changed(AbstractContainerMenu<?> menu, Level level, Player player, IMultipleItemHandler itemHandler);
     }
 
     public enum MoveDirection {
@@ -210,6 +228,11 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         ENERGY,
         FLUID,
         CUSTOM,
+    }
+
+    public enum HandlerType {
+        INPUT,
+        OUTPUT,
     }
 
     public record Drawable(Point renderPoint, Rectangle texturePos, ResourceLocation texture) {}

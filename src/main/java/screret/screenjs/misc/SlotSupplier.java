@@ -6,11 +6,11 @@ import net.minecraftforge.items.SlotItemHandler;
 import java.util.function.Supplier;
 
 public class SlotSupplier {
-    public Supplier<SlotItemHandler> supplier;
-    public int index, xPos, yPos;
+    public int index, containerIndex, xPos, yPos;
 
-    public SlotSupplier(int index, int xPos, int yPos) {
+    public SlotSupplier(int index, int containerIndex, int xPos, int yPos) {
         this.index = index;
+        this.containerIndex = containerIndex;
         this.xPos = xPos;
         this.yPos = yPos;
     }

@@ -42,7 +42,6 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
             return this;
         }
 
-
         @Override
         public BlockEntityMenuType createObject() {
             return new BlockEntityMenuType(this);

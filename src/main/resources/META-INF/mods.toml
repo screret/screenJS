@@ -72,7 +72,7 @@ license = "GNU GPL 3.0"
         side = "BOTH"
     [[dependencies.screenjs]]
         modId = "bejs"
-        mandatory = false
-        versionRange = "[1.19.2-1.0.5,)"
+        mandatory = true
+        versionRange = "[1.19.2-1.1.0,)"
         ordering = "AFTER"
         side = "BOTH"
