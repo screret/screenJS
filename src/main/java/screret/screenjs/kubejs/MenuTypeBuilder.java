@@ -59,6 +59,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     public MenuTypeBuilder(ResourceLocation i) {
         super(i);
+        this.inputSlotIndices = new int[] {0};
         slots = new ArrayList<>();
         drawables = new ArrayList<>();
         progressDrawables = new ArrayList<>();

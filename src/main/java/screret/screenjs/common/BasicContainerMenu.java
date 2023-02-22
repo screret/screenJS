@@ -18,7 +18,8 @@ public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu
         if(builder.slotChanged != null) {
             for (int index : builder.inputSlotIndices) {
                 this.itemHandlers.getAllContainers().set(index, new ChangedListenerStackHandler(itemHandlers.getSlotLimit(index, 0), this::slotsChanged));
-            }        }
+            }
+        }
         this.addSlots();
         this.addInventory(builder, pPlayerInventory);
     }

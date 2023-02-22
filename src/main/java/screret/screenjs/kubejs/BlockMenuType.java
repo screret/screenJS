@@ -1,5 +1,7 @@
 package screret.screenjs.kubejs;
 
+import dev.latvian.mods.kubejs.KubeJS;
+import dev.latvian.mods.kubejs.KubeJSRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -30,7 +32,7 @@ public class BlockMenuType extends MenuType<BlockContainerMenu> {
 
         public Builder(ResourceLocation i) {
             super(i);
-            openingBlock = null;
+            openingBlock = KubeJSRegistries.blocks().get(i);
             itemHandlers = new ArrayList<>();
         }
 

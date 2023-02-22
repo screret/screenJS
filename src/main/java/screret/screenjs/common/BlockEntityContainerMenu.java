@@ -1,6 +1,5 @@
 package screret.screenjs.common;
 
-import dev.architectury.platform.Platform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,18 +7,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.NetworkDirection;
-import screret.bejs.misc.BeJSCapabilities;
 import screret.bejs.misc.IMultipleItemHandler;
 import screret.screenjs.ScreenJS;
 import screret.screenjs.kubejs.BlockEntityMenuType;
 import screret.screenjs.misc.ChangedListenerStackHandler;
-import screret.screenjs.misc.OutputItemStackHandler;
 import screret.screenjs.misc.OutputSlotSupplier;
 import screret.screenjs.packets.S2CSyncBlockEntity;
-
-import java.util.Optional;
 
 public class BlockEntityContainerMenu extends AbstractContainerMenu<BlockEntityContainerMenu> {
     public final BlockEntity blockEntity;

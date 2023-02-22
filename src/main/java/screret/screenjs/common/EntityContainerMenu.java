@@ -9,7 +9,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.network.NetworkDirection;
-import screret.bejs.misc.BeJSCapabilities;
 import screret.bejs.misc.IMultipleItemHandler;
 import screret.screenjs.ScreenJS;
 import screret.screenjs.kubejs.EntityMenuType;

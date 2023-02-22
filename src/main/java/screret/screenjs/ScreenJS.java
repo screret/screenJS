@@ -77,28 +77,30 @@ public class ScreenJS {
     private void rightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
         var menuTypes = getOrCreateMenuTypeBuilders();
         Player entity = event.getEntity();
-        if(!entity.level.isClientSide) {
-            for (var type : menuTypes) {
-                BlockEntity be = entity.level.getBlockEntity(event.getPos());
-                Block block = entity.level.getBlockState(event.getPos()).getBlock();
+        for (var type : menuTypes) {
+            BlockEntity be = entity.level.getBlockEntity(event.getPos());
+            Block block = entity.level.getBlockState(event.getPos()).getBlock();
 
-                if(type instanceof BlockEntityMenuType.Builder beBuilder && be != null && be.getType() == beBuilder.openingBlockEntity) {
+            if(type instanceof BlockEntityMenuType.Builder beBuilder && be != null && be.getType() == beBuilder.openingBlockEntity) {
+                if(!entity.level.isClientSide) {
                     NetworkHooks.openScreen((ServerPlayer) entity,
                             new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
                                     new BlockEntityContainerMenu(beBuilder, pContainerId, pPlayerInventory, be), be instanceof Nameable nameable ? nameable.getName() : be.getBlockState().getBlock().getName()),
                             event.getPos());
-                    event.setCancellationResult(InteractionResult.SUCCESS);
-                    event.setCanceled(true);
-                    break;
-                } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
+                }
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+                break;
+            } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
+                if(!entity.level.isClientSide) {
                     NetworkHooks.openScreen((ServerPlayer) entity,
                             new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
                                     new BlockContainerMenu(blockBuilder, pContainerId, pPlayerInventory, ContainerLevelAccess.create(entity.level, event.getPos()), block), blockBuilder.openingBlock.getName()),
                             event.getPos());
-                    event.setCancellationResult(InteractionResult.SUCCESS);
-                    event.setCanceled(true);
-                    break;
                 }
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
+                break;
             }
         }
 
@@ -107,22 +109,23 @@ public class ScreenJS {
     private void rightClickEntity(final PlayerInteractEvent.EntityInteract event) {
         var menuTypes = getOrCreateMenuTypeBuilders();
         Player player = event.getEntity();
-        if(!player.level.isClientSide) {
-            for (var type : menuTypes) {
-                if(type instanceof EntityMenuType.Builder entityBuilder) {
-                    Entity target = event.getTarget();
-                    EntityType<?> entity = target.getType();
-                    if(entity == entityBuilder.openingEntity) {
+        for (var type : menuTypes) {
+            if(type instanceof EntityMenuType.Builder entityBuilder) {
+                Entity target = event.getTarget();
+                EntityType<?> entity = target.getType();
+                if(entity == entityBuilder.openingEntity) {
+                    if(!player.level.isClientSide) {
                         NetworkHooks.openScreen((ServerPlayer) player,
                                 new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
                                         new EntityContainerMenu(entityBuilder, pContainerId, pPlayerInventory, target), target.getName()),
                                 buf -> buf.writeVarInt(target.getId()));
-                        event.setCancellationResult(InteractionResult.SUCCESS);
-                        break;
                     }
+                    event.setCancellationResult(InteractionResult.CONSUME);
+                    break;
                 }
             }
         }
 
     }
+
 }

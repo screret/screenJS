@@ -29,7 +29,7 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         public transient BlockEntityType<?> openingBlockEntity;
         public Builder(ResourceLocation i) {
             super(i);
-            this.openingBlockEntity = null;
+            this.openingBlockEntity = KubeJSRegistries.blockEntityTypes().get(i);
         }
 
         @Override

@@ -31,6 +31,7 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
 
         public Builder(ResourceLocation i) {
             super(i);
+            openingEntity = KubeJSRegistries.entityTypes().get(i);
         }
 
         @Override

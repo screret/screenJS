@@ -37,32 +37,29 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
 
             switch (drawable.type()) {
                 case CUSTOM -> {
-                    RenderSystem.setShaderTexture(0, drawable.texture());
                     drawable.drawer().draw(menu, this, drawable, drawable.direction());
                 }
 
                 case PROGRESS -> {
-                    if (values.contains("isProcessing") && values.getBoolean("isProcessing")) {
+                    if (values.contains("progress") && values.contains("totalProgress")) {
                         int progress = values.getInt("progress");
                         int maxProgress = values.getInt("totalProgress");
-                        RenderSystem.setShaderTexture(0, drawable.texture());
                         switch (drawable.direction()) {
                             case DOWN -> {
                                 int value = progress(maxProgress, progress, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y - size.getHeight() + value), size.getX(), (size.getY() - size.getHeight() + value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), size.getWidth(), value);
                             }
                             case UP -> {
                                 int value = progress(maxProgress, progress, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y + size.getHeight() - value), size.getX(), (size.getY() - value), size.getWidth(), value - 1);
-
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() + size.getHeight() - value, size.getWidth(), value);
                             }
                             case LEFT -> {
                                 int value = progress(maxProgress, progress, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x - size.getWidth() + value), topPos + point.y, (size.getX() - size.getWidth() + value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), value, size.getHeight());
                             }
                             case RIGHT -> {
                                 int value = progress(maxProgress, progress, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x + size.getWidth() - value), topPos + point.y, (size.getX() - value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() + size.getWidth() - value, size.getY(), value, size.getHeight());
                             }
 
                         }
@@ -73,23 +70,22 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
                     if(values.contains("remainingFuel") && values.contains("fuelDuration")) {
                         int fuel = values.getInt("remainingFuel");
                         int maxFuel = values.getInt("fuelDuration");
-                        RenderSystem.setShaderTexture(0, drawable.texture());
                         switch (drawable.direction()) {
                             case DOWN -> {
                                 int value = progress(maxFuel, fuel, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y - size.getHeight() + value), size.getX(), (size.getY() - size.getHeight() + value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), size.getWidth(), value);
                             }
                             case UP -> {
                                 int value = progress(maxFuel, fuel, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y + size.getHeight() - value), size.getX(), (size.getY() - value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() + size.getHeight() - value, size.getWidth(), value);
                             }
                             case LEFT -> {
                                 int value = progress(maxFuel, fuel, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x - size.getWidth() + value), topPos + point.y, (size.getX() - size.getWidth() + value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), value, size.getHeight());
                             }
                             case RIGHT -> {
                                 int value = progress(maxFuel, fuel, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x + size.getWidth() - value), topPos + point.y, (size.getX() - value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() + size.getWidth() - value, size.getY(), value, size.getHeight());
                             }
 
                         }
@@ -101,23 +97,22 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
                     if (energyCap != null) {
                         int energy = energyCap.getEnergyStored();
                         int maxEnergy = energyCap.getMaxEnergyStored();
-                        RenderSystem.setShaderTexture(0, drawable.texture());
                         switch (drawable.direction()) {
                             case DOWN -> {
                                 int value = progress(maxEnergy, energy, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y - size.getHeight() + value), size.getX(), (size.getY() - size.getHeight() + value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), size.getWidth(), value);
                             }
                             case UP -> {
                                 int value = progress(maxEnergy, energy, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y + size.getHeight() - value), size.getX(), (size.getY() - value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() + size.getHeight() - value, size.getWidth(), value);
                             }
                             case LEFT -> {
                                 int value = progress(maxEnergy, energy, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x - size.getWidth() + value), topPos + point.y, (size.getX() - size.getWidth() + value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), value, size.getHeight());
                             }
                             case RIGHT -> {
                                 int value = progress(maxEnergy, energy, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x + size.getWidth() - value), topPos + point.y, (size.getX() - value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() + size.getWidth() - value, size.getY(), value, size.getHeight());
                             }
 
                         }
@@ -130,23 +125,22 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
                     if (fluidCap != null && tankIndex != -1) {
                         int fluid = fluidCap.getFluidInTank(tankIndex).getAmount();
                         int maxFluid = fluidCap.getTankCapacity(tankIndex);
-                        RenderSystem.setShaderTexture(0, drawable.texture());
                         switch (drawable.direction()) {
                             case DOWN -> {
                                 int value = progress(maxFluid, fluid, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y - size.getHeight() + value), size.getX(), (size.getY() - size.getHeight() + value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), size.getWidth(), value);
                             }
                             case UP -> {
                                 int value = progress(maxFluid, fluid, size.getHeight());
-                                this.blit(pPoseStack, leftPos + point.x, (topPos + point.y + size.getHeight() - value), size.getX(), (size.getY() - value), size.getWidth(), value - 1);
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y + size.getHeight() - value, size.getX(), size.getY() + size.getHeight() - value, size.getWidth(), value);
                             }
                             case LEFT -> {
                                 int value = progress(maxFluid, fluid, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x - size.getWidth() + value), topPos + point.y, (size.getX() - size.getWidth() + value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x, topPos + point.y, size.getX(), size.getY(), value, size.getHeight());
                             }
                             case RIGHT -> {
                                 int value = progress(maxFluid, fluid, size.getWidth());
-                                this.blit(pPoseStack, (leftPos + point.x + size.getWidth() - value), topPos + point.y, (size.getX() - value), size.getY(), value - 1, size.getHeight());
+                                this.blit(pPoseStack, leftPos + point.x + size.getWidth() - value, topPos + point.y, size.getX() + size.getWidth() - value, size.getY(), value, size.getHeight());
                             }
 
                         }
