@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import screret.screenjs.kubejs.MenuTypeBuilder;
+import screret.screenjs.kubejs.menu.MenuTypeBuilder;
 
 import javax.annotation.Nonnull;
 

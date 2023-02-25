@@ -1,6 +1,5 @@
-package screret.screenjs.kubejs;
+package screret.screenjs.kubejs.menu;
 
-import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.KubeJSRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;

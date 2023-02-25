@@ -1,6 +1,8 @@
 package screret.screenjs;
 
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import dev.latvian.mods.kubejs.BuilderBase;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -12,10 +14,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkDirection;
@@ -27,9 +33,10 @@ import org.apache.logging.log4j.Logger;
 import screret.screenjs.common.BlockContainerMenu;
 import screret.screenjs.common.BlockEntityContainerMenu;
 import screret.screenjs.common.EntityContainerMenu;
-import screret.screenjs.kubejs.BlockEntityMenuType;
-import screret.screenjs.kubejs.BlockMenuType;
-import screret.screenjs.kubejs.EntityMenuType;
+import screret.screenjs.kubejs.key.KeybindingRegisterEventJS;
+import screret.screenjs.kubejs.menu.BlockEntityMenuType;
+import screret.screenjs.kubejs.menu.BlockMenuType;
+import screret.screenjs.kubejs.menu.EntityMenuType;
 import screret.screenjs.packets.*;
 
 import java.util.Optional;
@@ -52,10 +59,12 @@ public class ScreenJS {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(EventPriority.LOWEST, this::registerKeyBinds);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::rightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(this::rightClickEntity);
+        MinecraftForge.EVENT_BUS.addListener(this::keyPress);
     }
 
     public void commonSetup(final FMLCommonSetupEvent event) {
@@ -63,6 +72,12 @@ public class ScreenJS {
         CHANNEL.registerMessage(index++, C2SRequestSync.class, C2SRequestSync::encode, C2SRequestSync::new, C2SRequestSync::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         CHANNEL.registerMessage(index++, S2CSyncBlockEntity.class, S2CSyncBlockEntity::encode, S2CSyncBlockEntity::new, S2CSyncBlockEntity::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         CHANNEL.registerMessage(index++, S2CSyncEntity.class, S2CSyncEntity::encode, S2CSyncEntity::new, S2CSyncEntity::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    }
+
+    public void registerKeyBinds(final RegisterKeyMappingsEvent event) {
+        for (KeybindingRegisterEventJS.KeyBind bind : KeybindingRegisterEventJS.registeredBinds.values()) {
+            event.register(new KeyMapping(bind.name(), bind.keyCode(), bind.category()));
+        }
     }
 
     private static BuilderBase[] builders = null;
@@ -75,35 +90,37 @@ public class ScreenJS {
     }
 
     private void rightClickBlock(final PlayerInteractEvent.RightClickBlock event) {
-        var menuTypes = getOrCreateMenuTypeBuilders();
         Player entity = event.getEntity();
-        for (var type : menuTypes) {
-            BlockEntity be = entity.level.getBlockEntity(event.getPos());
-            Block block = entity.level.getBlockState(event.getPos()).getBlock();
+        if (!entity.isCrouching()) {
+            var menuTypes = getOrCreateMenuTypeBuilders();
 
-            if(type instanceof BlockEntityMenuType.Builder beBuilder && be != null && be.getType() == beBuilder.openingBlockEntity) {
-                if(!entity.level.isClientSide) {
-                    NetworkHooks.openScreen((ServerPlayer) entity,
-                            new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
-                                    new BlockEntityContainerMenu(beBuilder, pContainerId, pPlayerInventory, be), be instanceof Nameable nameable ? nameable.getName() : be.getBlockState().getBlock().getName()),
-                            event.getPos());
+            for (var type : menuTypes) {
+                BlockEntity be = entity.level.getBlockEntity(event.getPos());
+                Block block = entity.level.getBlockState(event.getPos()).getBlock();
+
+                if(type instanceof BlockEntityMenuType.Builder beBuilder && be != null && be.getType() == beBuilder.openingBlockEntity) {
+                    if(!entity.level.isClientSide) {
+                        NetworkHooks.openScreen((ServerPlayer) entity,
+                                new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
+                                        new BlockEntityContainerMenu(beBuilder, pContainerId, pPlayerInventory, be), be instanceof Nameable nameable ? nameable.getName() : be.getBlockState().getBlock().getName()),
+                                event.getPos());
+                    }
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    break;
+                } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
+                    if(!entity.level.isClientSide) {
+                        NetworkHooks.openScreen((ServerPlayer) entity,
+                                new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
+                                        new BlockContainerMenu(blockBuilder, pContainerId, pPlayerInventory, ContainerLevelAccess.create(entity.level, event.getPos()), block), blockBuilder.openingBlock.getName()),
+                                event.getPos());
+                    }
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    break;
                 }
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-                break;
-            } else if(type instanceof BlockMenuType.Builder blockBuilder && block == blockBuilder.openingBlock) {
-                if(!entity.level.isClientSide) {
-                    NetworkHooks.openScreen((ServerPlayer) entity,
-                            new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) ->
-                                    new BlockContainerMenu(blockBuilder, pContainerId, pPlayerInventory, ContainerLevelAccess.create(entity.level, event.getPos()), block), blockBuilder.openingBlock.getName()),
-                            event.getPos());
-                }
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-                break;
             }
         }
-
     }
 
     private void rightClickEntity(final PlayerInteractEvent.EntityInteract event) {
@@ -126,6 +143,13 @@ public class ScreenJS {
             }
         }
 
+    }
+
+    private void keyPress(final InputEvent.Key event) {
+        var key = KeybindingRegisterEventJS.registeredBinds.get(event.getKey());
+        if(key != null) {
+            KeybindingRegisterEventJS.bindsToActions.get(key).run(event.getAction(), event.getModifiers());
+        }
     }
 
 }

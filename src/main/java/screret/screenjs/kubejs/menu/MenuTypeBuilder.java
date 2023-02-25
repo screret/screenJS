@@ -1,4 +1,4 @@
-package screret.screenjs.kubejs;
+package screret.screenjs.kubejs.menu;
 
 import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
@@ -21,7 +21,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.items.IItemHandler;
-import screret.bejs.misc.IMultipleItemHandler;
 import screret.screenjs.ScreenJSPlugin;
 import screret.screenjs.client.AbstractContainerScreen;
 import screret.screenjs.common.AbstractContainerMenu;
@@ -213,7 +212,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     @FunctionalInterface
     public interface SlotChangedCallback {
-        void changed(AbstractContainerMenu<?> menu, Level level, Player player, IMultipleItemHandler itemHandler);
+        void changed(AbstractContainerMenu<?> menu, Level level, Player player, IItemHandler itemHandler);
     }
 
     public enum MoveDirection {

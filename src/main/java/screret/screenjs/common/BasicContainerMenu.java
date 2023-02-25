@@ -4,7 +4,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import screret.bejs.misc.IMultipleItemHandler;
 import screret.bejs.misc.MultipleItemStackHandler;
-import screret.screenjs.kubejs.BasicMenuType;
+import screret.screenjs.kubejs.menu.BasicMenuType;
 import screret.screenjs.misc.ChangedListenerStackHandler;
 import screret.screenjs.misc.OutputSlotSupplier;
 
@@ -14,7 +14,7 @@ public class BasicContainerMenu extends AbstractContainerMenu<BasicContainerMenu
 
     public BasicContainerMenu(BasicMenuType.Builder builder, int pContainerId, Inventory pPlayerInventory) {
         super(builder, pContainerId, pPlayerInventory);
-        this.itemHandlers = new MultipleItemStackHandler(1, builder.slots.size());
+        this.itemHandlers = new MultipleItemStackHandler(builder.itemHandlers);
         if(builder.slotChanged != null) {
             for (int index : builder.inputSlotIndices) {
                 this.itemHandlers.getAllContainers().set(index, new ChangedListenerStackHandler(itemHandlers.getSlotLimit(index, 0), this::slotsChanged));

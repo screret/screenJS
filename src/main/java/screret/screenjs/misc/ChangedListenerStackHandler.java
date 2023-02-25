@@ -14,6 +14,11 @@ public class ChangedListenerStackHandler extends ItemStackHandler {
         this.callback = callback;
     }
 
+    public ChangedListenerStackHandler(NonNullList<ItemStack> stacks, ChangedCallback callback) {
+        super(stacks);
+        this.callback = callback;
+    }
+
     @Override
     protected void onContentsChanged(int slot) {
         callback.slotsChanged(null);
