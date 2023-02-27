@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
@@ -42,6 +43,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     public transient List<SlotSupplier> slots;
     public transient int[] inputSlotIndices;
+    public transient List<Text> texts;
     public transient List<Drawable> drawables;
     public transient List<ProgressDrawable> progressDrawables;
     public transient List<Button> buttons;
@@ -60,6 +62,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         super(i);
         this.inputSlotIndices = new int[] {0};
         slots = new ArrayList<>();
+        texts = new ArrayList<>();
         drawables = new ArrayList<>();
         progressDrawables = new ArrayList<>();
         buttons = new ArrayList<>();
@@ -115,8 +118,18 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    public MenuTypeBuilder<M> drawable(int xPos, int yPos, Rectangle texturePos, ResourceLocation texureLoc) {
-        drawables.add(new Drawable(new Point(xPos, yPos), texturePos, texureLoc));
+    public MenuTypeBuilder<M> text(int xPos, int yPos, boolean drawCentered, boolean drawShadow, Color color, Function<AbstractContainerMenu<?>, Component> text) {
+        texts.add(new Text(new Point(xPos, yPos), drawCentered, drawShadow, color, text));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> gradient(Rectangle position, int colorStart, int colorEnd) {
+        drawables.add(new Drawable(new Point(position.x, position.y), position, null, colorStart, colorEnd));
+        return this;
+    }
+
+    public MenuTypeBuilder<M> drawable(int xPos, int yPos, Rectangle texturePos, @Nullable ResourceLocation texureLoc, int tintColor) {
+        drawables.add(new Drawable(new Point(xPos, yPos), texturePos, texureLoc, tintColor, tintColor));
         return this;
     }
 
@@ -235,7 +248,8 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         OUTPUT,
     }
 
-    public record Drawable(Point renderPoint, Rectangle texturePos, ResourceLocation texture) {}
+    public record Text(Point position, boolean centered, boolean withShadow, Color color, Function<AbstractContainerMenu<?>, Component> text) {}
+    public record Drawable(Point renderPoint, Rectangle texturePos, @Nullable ResourceLocation texture, int colorStart, int colorEnd) {}
     public record ProgressDrawable(Point renderPoint, Rectangle texturePos, ResourceLocation texture, MoveDirection direction, ProgressDrawableType type, int handlerIndex, @Nullable DrawMethodJS drawer) {}
     public record Button(Rectangle position, Component tooltip, OnPress methodToRun) {}
 

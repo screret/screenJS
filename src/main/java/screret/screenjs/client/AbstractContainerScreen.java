@@ -3,10 +3,13 @@ package screret.screenjs.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import screret.screenjs.common.AbstractContainerMenu;
 
@@ -55,10 +58,33 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
         this.blit(pPoseStack, this.leftPos, this.topPos, this.imageX, this.imageY, this.imageWidth, this.imageHeight);
 
         for(var drawable : menu.builder.drawables) {
-            RenderSystem.setShaderTexture(0, drawable.texture());
             var position = drawable.renderPoint();
             var rect = rectCache.get(drawable.texturePos());
-            this.blit(pPoseStack, position.x, position.y, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            if (drawable.texture() != null) {
+                color = decodeARGBToRBGAZeroToOne(drawable.colorStart());
+                RenderSystem.setShaderColor(color[0], color[1], color[2], color[3]);
+                RenderSystem.setShaderTexture(0, drawable.texture());
+                this.blit(pPoseStack, position.x, position.y, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            } else {
+                this.fillGradient(pPoseStack, rect.getX(), rect.getY(), rect.getWidth() + rect.getX(), rect.getHeight() + rect.getY(), drawable.colorStart(), drawable.colorEnd());
+            }
+        }
+
+        for (var text : menu.builder.texts) {
+            var position = text.position();
+            if(text.centered()) {
+                if(text.withShadow()) {
+                    drawCenteredString(pPoseStack, Minecraft.getInstance().font, text.text().apply(this.menu), position.x, position.y, text.color().getArgbJS());
+                } else {
+                    drawCenteredStringNoShadow(pPoseStack, Minecraft.getInstance().font, text.text().apply(this.menu), position.x, position.y, text.color().getArgbJS());
+                }
+            } else {
+                if(text.withShadow()) {
+                    drawString(pPoseStack, Minecraft.getInstance().font, text.text().apply(this.menu), position.x, position.y, text.color().getArgbJS());
+                } else {
+                    drawStringNoShadow(pPoseStack, Minecraft.getInstance().font, text.text().apply(this.menu), position.x, position.y, text.color().getArgbJS());
+                }
+            }
         }
     }
 
@@ -70,4 +96,14 @@ public class AbstractContainerScreen<T extends AbstractContainerMenu<T>> extends
         array[2] = ((color & 0x000000FF)      ) / 255f; //blue
         return array;
     }
+
+    public static void drawCenteredStringNoShadow(PoseStack pPoseStack, Font pFont, Component pText, float pX, float pY, int pColor) {
+        FormattedCharSequence formattedcharsequence = pText.getVisualOrderText();
+        pFont.draw(pPoseStack, formattedcharsequence, pX - pFont.width(formattedcharsequence) / 2f, pY, pColor);
+    }
+
+    public static void drawStringNoShadow(PoseStack pPoseStack, Font pFont, Component pText, float pX, float pY, int pColor) {
+        pFont.drawShadow(pPoseStack, pText, pX, pY, pColor);
+    }
+
 }

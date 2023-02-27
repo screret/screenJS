@@ -26,7 +26,12 @@ public class BasicMenuType extends MenuType<BasicContainerMenu> {
         }
 
         public Builder addItemHandler(int size) {
-            itemHandlers.add(new BlockEntityTypeBuilder.ItemHandler(size));
+            itemHandlers.add(new BlockEntityTypeBuilder.ItemHandler(size, true));
+            return this;
+        }
+
+        public Builder addItemHandler(int size, boolean canInput) {
+            itemHandlers.add(new BlockEntityTypeBuilder.ItemHandler(size, canInput));
             return this;
         }
 
