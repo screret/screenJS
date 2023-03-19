@@ -1,5 +1,6 @@
 package screret.screenjs.kubejs.menu;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.latvian.mods.kubejs.BuilderBase;
 import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes;
 import dev.latvian.mods.rhino.mod.util.color.Color;
@@ -220,7 +221,7 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
 
     @FunctionalInterface
     public interface DrawMethodJS {
-        void draw(AbstractContainerMenu<?> menu, AbstractContainerScreen<?> screen, ProgressDrawable drawable, MoveDirection direction);
+        void draw(PoseStack poseStack, int leftPos, int topPos, AbstractContainerMenu<?> menu, AbstractContainerScreen<?> screen, ProgressDrawable drawable, MoveDirection direction);
     }
 
     @FunctionalInterface

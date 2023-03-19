@@ -37,7 +37,7 @@ public class EntityContainerScreen extends AbstractContainerScreen<EntityContain
 
             switch (drawable.type()) {
                 case CUSTOM -> {
-                    drawable.drawer().draw(menu, this, drawable, drawable.direction());
+                    drawable.drawer().draw(pPoseStack, leftPos, topPos, menu, this, drawable, drawable.direction());
                 }
 
                 case PROGRESS -> {
