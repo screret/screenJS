@@ -11,6 +11,8 @@ import net.minecraftforge.network.IContainerFactory;
 import screret.screenjs.common.BlockEntityContainerMenu;
 import screret.screenjs.client.BlockEntityContainerScreen;
 
+import java.util.function.Supplier;
+
 public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
     private final ResourceLocation id;
 
@@ -32,8 +34,8 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         }
 
         @Override
-        public ScreenConstructor getScreenConstructor() {
-            return BlockEntityContainerScreen::new;
+        public Supplier<ScreenConstructor> getScreenConstructor() {
+            return () -> BlockEntityContainerScreen::new;
         }
 
         public Builder setBlockEntity(ResourceLocation blockEntity) {

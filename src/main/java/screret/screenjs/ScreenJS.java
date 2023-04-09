@@ -59,12 +59,10 @@ public class ScreenJS {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(EventPriority.LOWEST, this::registerKeyBinds);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.addListener(this::rightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(this::rightClickEntity);
-        MinecraftForge.EVENT_BUS.addListener(this::keyPress);
     }
 
     public void commonSetup(final FMLCommonSetupEvent event) {
@@ -74,11 +72,7 @@ public class ScreenJS {
         CHANNEL.registerMessage(index++, S2CSyncEntity.class, S2CSyncEntity::encode, S2CSyncEntity::new, S2CSyncEntity::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 
-    public void registerKeyBinds(final RegisterKeyMappingsEvent event) {
-        for (KeybindingRegisterEventJS.KeyBind bind : KeybindingRegisterEventJS.registeredBinds.values()) {
-            event.register(new KeyMapping(bind.name(), bind.keyCode(), bind.category()));
-        }
-    }
+
 
     private static BuilderBase[] builders = null;
 
@@ -143,13 +137,6 @@ public class ScreenJS {
             }
         }
 
-    }
-
-    private void keyPress(final InputEvent.Key event) {
-        var key = KeybindingRegisterEventJS.registeredBinds.get(event.getKey());
-        if(key != null) {
-            KeybindingRegisterEventJS.bindsToActions.get(key).run(event.getAction(), event.getModifiers());
-        }
     }
 
 }

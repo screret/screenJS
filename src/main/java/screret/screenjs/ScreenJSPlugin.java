@@ -9,6 +9,9 @@ import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import screret.screenjs.kubejs.key.KeybindingRegisterEventJS;
 import screret.screenjs.kubejs.menu.BasicMenuType;
@@ -41,8 +44,10 @@ public class ScreenJSPlugin extends KubeJSPlugin {
         event.add("RecipeWrapper", RecipeWrapper.class);
 
         event.add("KeyBind", KeybindingRegisterEventJS.KeyBind.class);
-        event.add("InputConstants", InputConstants.class);
-        event.add("Minecraft", Minecraft.class);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            event.add("InputConstants", InputConstants.class);
+            event.add("Minecraft", Minecraft.class);
+        }
     }
 
     @Override

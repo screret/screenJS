@@ -8,6 +8,7 @@ import screret.screenjs.client.BasicContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class BasicMenuType extends MenuType<BasicContainerMenu> {
     private final ResourceLocation id;
@@ -36,8 +37,8 @@ public class BasicMenuType extends MenuType<BasicContainerMenu> {
         }
 
         @Override
-        public ScreenConstructor getScreenConstructor() {
-            return BasicContainerScreen::new;
+        public Supplier<ScreenConstructor> getScreenConstructor() {
+            return () -> BasicContainerScreen::new;
         }
 
 

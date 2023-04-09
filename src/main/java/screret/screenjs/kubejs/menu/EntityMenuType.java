@@ -10,6 +10,8 @@ import net.minecraftforge.network.IContainerFactory;
 import screret.screenjs.client.EntityContainerScreen;
 import screret.screenjs.common.EntityContainerMenu;
 
+import java.util.function.Supplier;
+
 public class EntityMenuType extends MenuType<EntityContainerMenu> {
     private final ResourceLocation id;
 
@@ -33,8 +35,8 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
         }
 
         @Override
-        public ScreenConstructor getScreenConstructor() {
-            return EntityContainerScreen::new;
+        public Supplier<ScreenConstructor> getScreenConstructor() {
+            return () -> EntityContainerScreen::new;
         }
 
         public EntityMenuType.Builder setEntity(ResourceLocation entity) {

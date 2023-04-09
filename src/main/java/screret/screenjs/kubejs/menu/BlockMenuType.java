@@ -13,6 +13,7 @@ import screret.screenjs.client.BlockContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class BlockMenuType extends MenuType<BlockContainerMenu> {
     private final ResourceLocation id;
@@ -36,8 +37,8 @@ public class BlockMenuType extends MenuType<BlockContainerMenu> {
         }
 
         @Override
-        public ScreenConstructor getScreenConstructor() {
-            return BlockContainerScreen::new;
+        public Supplier<ScreenConstructor> getScreenConstructor() {
+            return () -> BlockContainerScreen::new;
         }
 
         public Builder setBlock(Block block) {
