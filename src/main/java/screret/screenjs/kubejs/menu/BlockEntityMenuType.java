@@ -34,8 +34,8 @@ public class BlockEntityMenuType extends MenuType<BlockEntityContainerMenu> {
         }
 
         @Override
-        public Supplier<ScreenConstructor> getScreenConstructor() {
-            return () -> BlockEntityContainerScreen::new;
+        public ScreenConstructor getScreenConstructor() {
+            return BlockEntityContainerScreen::new;
         }
 
         public Builder setBlockEntity(ResourceLocation blockEntity) {

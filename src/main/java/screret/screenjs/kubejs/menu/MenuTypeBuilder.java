@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.items.IItemHandler;
@@ -84,7 +85,8 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return ScreenJSPlugin.MENU_TYPE;
     }
 
-    public abstract Supplier<ScreenConstructor> getScreenConstructor();
+    @OnlyIn(Dist.CLIENT)
+    public abstract ScreenConstructor getScreenConstructor();
 
     public MenuTypeBuilder<M> addSlot(int x, int y) {
         slots.add(new SlotSupplier(slots.size(), 0, x, y));
@@ -187,10 +189,10 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         return this;
     }
 
-    @HideFromJS
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void clientRegistry(Supplier<Minecraft> minecraft) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MenuScreens.<M, AbstractContainerScreen<M>>register(get(), (pMenu, pInventory, pTitle) -> (AbstractContainerScreen<M>) getScreenConstructor().get().create(pMenu, pInventory, pTitle)));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MenuScreens.<M, AbstractContainerScreen<M>>register(get(), (pMenu, pInventory, pTitle) -> (AbstractContainerScreen<M>) getScreenConstructor().create(pMenu, pInventory, pTitle)));
     }
 
     public static ItemStack quickMoveStack(Player pPlayer, int pIndex, AbstractContainerMenu<?> menu) {
@@ -221,6 +223,12 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
     public interface QuickMoveFuncJS {
         ItemStack quickMoveStack(Player player, int slotId, AbstractContainerMenu<?> menu);
     }
+
+    @FunctionalInterface
+    public interface DrawMethodJS {
+        void draw(PoseStack poseStack, int leftPos, int topPos, AbstractContainerMenu<?> menu, AbstractContainerScreen<?> screen, MenuTypeBuilder.ProgressDrawable drawable, MenuTypeBuilder.MoveDirection direction);
+    }
+
 
     @FunctionalInterface
     public interface SlotChangedCallback {
@@ -257,7 +265,15 @@ public abstract class MenuTypeBuilder<M extends AbstractContainerMenu<M>> extend
         void onPress(net.minecraft.client.gui.components.Button pButton);
     }
 
+    @FunctionalInterface
+    public interface ScreenConstructor {
+        default void fromPacket(Component pTitle, MenuType<AbstractContainerMenu<?>> pType, Minecraft pMc, int pWindowId) {
+            AbstractContainerScreen<?> u = this.create(pType.create(pWindowId, pMc.player.getInventory()), pMc.player.getInventory(), pTitle);
+            pMc.player.containerMenu = u.getMenu();
+            pMc.setScreen(u);
+        }
 
+        AbstractContainerScreen<? extends AbstractContainerMenu<?>> create(AbstractContainerMenu<?> pMenu, Inventory pInventory, Component pTitle);
+    }
 
 }
-

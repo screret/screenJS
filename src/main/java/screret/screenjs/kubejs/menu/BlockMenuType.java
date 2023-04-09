@@ -37,8 +37,8 @@ public class BlockMenuType extends MenuType<BlockContainerMenu> {
         }
 
         @Override
-        public Supplier<ScreenConstructor> getScreenConstructor() {
-            return () -> BlockContainerScreen::new;
+        public ScreenConstructor getScreenConstructor() {
+            return BlockContainerScreen::new;
         }
 
         public Builder setBlock(Block block) {

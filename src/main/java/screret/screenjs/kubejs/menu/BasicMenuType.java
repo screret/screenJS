@@ -37,8 +37,8 @@ public class BasicMenuType extends MenuType<BasicContainerMenu> {
         }
 
         @Override
-        public Supplier<ScreenConstructor> getScreenConstructor() {
-            return () -> BasicContainerScreen::new;
+        public ScreenConstructor getScreenConstructor() {
+            return BasicContainerScreen::new;
         }
 
 

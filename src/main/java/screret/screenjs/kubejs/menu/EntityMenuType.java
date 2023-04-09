@@ -35,8 +35,8 @@ public class EntityMenuType extends MenuType<EntityContainerMenu> {
         }
 
         @Override
-        public Supplier<ScreenConstructor> getScreenConstructor() {
-            return () -> EntityContainerScreen::new;
+        public ScreenConstructor getScreenConstructor() {
+            return EntityContainerScreen::new;
         }
 
         public EntityMenuType.Builder setEntity(ResourceLocation entity) {
