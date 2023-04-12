@@ -19,11 +19,14 @@ public class ScreenJSClientEvents {
         }
     }
 
-    @SubscribeEvent
-    private static void keyPress(final InputEvent.Key event) {
-        var key = KeybindingRegisterEventJS.registeredBinds.get(event.getKey());
-        if(key != null) {
-            KeybindingRegisterEventJS.bindsToActions.get(key).run(event.getAction(), event.getModifiers());
+    @Mod.EventBusSubscriber(modid = ScreenJS.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+    public static class Forge {
+        @SubscribeEvent
+        public static void keyPress(final InputEvent.Key event) {
+            var key = KeybindingRegisterEventJS.registeredBinds.get(event.getKey());
+            if(key != null) {
+                KeybindingRegisterEventJS.bindsToActions.get(key).run(event.getAction(), event.getModifiers());
+            }
         }
     }
 }
